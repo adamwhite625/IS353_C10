@@ -45,7 +45,7 @@
 | **Giai đoạn 2: Khảo sát Toàn diện** | Tuần 2 - Tuần 7 | Thực hiện **Exp 1 đến Exp 8**: Huấn luyện GCN/GAT 5 seeds, Sanity check motif, đường cong Fidelity theo ngân sách, ma trận Agreement, phân rã phương sai (seed GNN vs seed explainer), mở rộng đồ thị thực tế (Amazon Photo, ogbn-arxiv,...). | Bảng số liệu benchmark toàn diện. |
 | **Giai đoạn 3: Báo cáo Cuối kỳ** | Tuần 7 - Tuần 8 | Đánh giá test set cho các phát hiện đã khóa, thử nghiệm cải tiến có điều kiện (**Exp 9**), hoàn thiện Báo cáo kỹ thuật (~15 trang Springer LNCS) và bảo vệ cuối kỳ. | Technical Report, Slide, Repository, Web Demo. |
 
-
+..
 
 ---
 
