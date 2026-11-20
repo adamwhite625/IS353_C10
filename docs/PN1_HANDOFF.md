@@ -1,5 +1,11 @@
 # Bàn giao kỹ thuật PN1
 
+## Đầu vào chính thức cho cuối kỳ
+
+- **BA-Shapes** dùng dữ liệu tái dựng theo giao thức cuối kỳ đã lưu trong repository.
+- **Cora** dùng dữ liệu khớp manifest T06 và checkpoint được huấn luyện mới. Checkpoint `gcn_s1000.pt` là mốc cố định. Lưới đầy đủ dùng cả năm seed.
+- Gói `PN1_H1.zip` có manifest để kiểm tra SHA-256 trước khi chạy. Quyết định này áp dụng cho lượt cuối kỳ. Biên bản GATE 0 ghi riêng các đối chiếu giữa kỳ còn thiếu.
+
 ## H1 chuyển cho PN2
 
 - Dữ liệu chính ở `results/data/{bashapes,cora}/data.pt`. BA-Shapes dựng lại và Cora khớp manifest T06.
