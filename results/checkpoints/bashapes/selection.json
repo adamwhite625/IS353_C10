@@ -1,0 +1,49 @@
+{
+  "planned_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004
+  ],
+  "selected_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004
+  ],
+  "attempts": [
+    {
+      "seed": 1000,
+      "used": true,
+      "replaces_seed": null,
+      "reason": ""
+    },
+    {
+      "seed": 1001,
+      "used": true,
+      "replaces_seed": null,
+      "reason": ""
+    },
+    {
+      "seed": 1002,
+      "used": true,
+      "replaces_seed": null,
+      "reason": ""
+    },
+    {
+      "seed": 1003,
+      "used": true,
+      "replaces_seed": null,
+      "reason": ""
+    },
+    {
+      "seed": 1004,
+      "used": true,
+      "replaces_seed": null,
+      "reason": ""
+    }
+  ],
+  "fixed_seed": 1000
+}

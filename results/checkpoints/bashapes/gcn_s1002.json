@@ -1,0 +1,82 @@
+{
+  "git_commit": "4e83a4707b2ff436b9e2564cb6e649a1d549af16",
+  "git_dirty": false,
+  "utc": "2026-11-20T12:59:07.873446+00:00",
+  "argv": [
+    "scripts/train_gnn.py",
+    "--dataset",
+    "bashapes",
+    "--out",
+    "/tmp/pn1-clean-output/checkpoints"
+  ],
+  "python": "3.12.14",
+  "versions": {
+    "torch": "2.15.0+cpu",
+    "torch-geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1"
+  },
+  "protocol_sha256": "e7ca7fd4a34bd22bdc527a4231b1c837625a225d1d8488e241d65b0aa9e2398e",
+  "device": "cpu",
+  "dataset": "bashapes",
+  "seed": 1002,
+  "mode": "full",
+  "data_sha256": "63289ca8c3dd0113d6c3e1e64a9663e1826abdb036dec3771db61aa579d87847",
+  "checkpoint_sha256": "9306d40420111f606fbab9f274a2f2e593849f13af263a600f942ae605a0ad60",
+  "model_config_sha256": "0cb556c3520131866aaacca0219c1ca02e5f29dd4c6070f829a47036025f4e1b",
+  "model_config": {
+    "arch": "gcn",
+    "layers": 2,
+    "hidden_dim": 32,
+    "dropout": 0.0,
+    "lr": 0.01,
+    "weight_decay": 0.0001,
+    "epochs": 600,
+    "class_weights": [
+      0.5833,
+      1.0938,
+      1.0938,
+      2.1875
+    ],
+    "selection": "best_val_macro_f1"
+  },
+  "epochs": 600,
+  "best_epoch": 559,
+  "best_val_score": 0.8765630700852434,
+  "class_weights": [
+    0.5833333134651184,
+    1.09375,
+    1.09375,
+    2.1875
+  ],
+  "metrics": {
+    "train_acc": 0.919047619047619,
+    "train_macro_f1": 0.8813724069646695,
+    "train_recall": [
+      1.0,
+      0.96875,
+      0.8333333333333334,
+      0.6875
+    ],
+    "val_acc": 0.9214285714285714,
+    "val_macro_f1": 0.8765630700852434,
+    "val_recall": [
+      1.0,
+      1.0,
+      0.84375,
+      0.625
+    ],
+    "test_acc": 0.9285714285714286,
+    "test_macro_f1": 0.9022761346599428,
+    "test_recall": [
+      1.0,
+      0.96875,
+      0.78125,
+      0.875
+    ]
+  },
+  "training_sec": 2.2852602580001076,
+  "predictions_reload_match": true,
+  "accepted_by_plan": true
+}

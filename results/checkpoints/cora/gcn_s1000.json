@@ -1,0 +1,80 @@
+{
+  "git_commit": "4e83a4707b2ff436b9e2564cb6e649a1d549af16",
+  "git_dirty": false,
+  "utc": "2026-11-20T12:59:31.595876+00:00",
+  "argv": [
+    "scripts/train_gnn.py",
+    "--dataset",
+    "cora",
+    "--out",
+    "/tmp/pn1-clean-output/checkpoints"
+  ],
+  "python": "3.12.14",
+  "versions": {
+    "torch": "2.15.0+cpu",
+    "torch-geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1"
+  },
+  "protocol_sha256": "e7ca7fd4a34bd22bdc527a4231b1c837625a225d1d8488e241d65b0aa9e2398e",
+  "device": "cpu",
+  "dataset": "cora",
+  "seed": 1000,
+  "mode": "full",
+  "data_sha256": "f2846a82cdd1e5b5a0804baad24c997a7720b27155a6c9655730bd6c42836268",
+  "checkpoint_sha256": "30330e26f5275d70ec1d2e6839b2c056659c0b00b42e2641170b79f397cabd27",
+  "model_config_sha256": "eced815415577d1200f9d9dd600f9e907e75167578827962ef3bf4fd123f0278",
+  "model_config": {
+    "arch": "gcn",
+    "layers": 2,
+    "hidden_dim": 64,
+    "dropout": 0.5,
+    "lr": 0.01,
+    "weight_decay": 0.0005,
+    "epochs": 200,
+    "selection": "best_val_acc"
+  },
+  "epochs": 200,
+  "best_epoch": 75,
+  "best_val_score": 0.816,
+  "class_weights": null,
+  "metrics": {
+    "train_acc": 0.9928571428571429,
+    "train_macro_f1": 0.9928526757795051,
+    "train_recall": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.95,
+      1.0,
+      1.0
+    ],
+    "val_acc": 0.816,
+    "val_macro_f1": 0.8081541843433565,
+    "val_recall": [
+      0.7540983606557377,
+      0.8333333333333334,
+      0.9871794871794872,
+      0.7468354430379747,
+      0.8518518518518519,
+      0.8070175438596491,
+      0.7586206896551724
+    ],
+    "test_acc": 0.836,
+    "test_macro_f1": 0.8246356671891026,
+    "test_recall": [
+      0.8076923076923077,
+      0.8571428571428571,
+      0.8958333333333334,
+      0.8401253918495298,
+      0.825503355704698,
+      0.7961165048543689,
+      0.796875
+    ]
+  },
+  "training_sec": 15.511469083000065,
+  "predictions_reload_match": true,
+  "accepted_by_plan": true
+}
