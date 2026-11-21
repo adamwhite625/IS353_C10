@@ -1,0 +1,98 @@
+{
+  "checkpoint_path": "/Users/nguyenlebaodang/Downloads/IS353_C10/results/checkpoints/cora/gcn_s1002.pt",
+  "checkpoint_sha256": "900c58682372fbd3a15e9fc76903e2a3f7839d431c9769d670f82cb062d383a9",
+  "in_dim": 1433,
+  "hidden_dim": 64,
+  "n_classes": 7,
+  "dropout": 0.5,
+  "metrics": {
+    "train_acc": 1.0,
+    "val_acc": 0.808,
+    "val_macro_f1": 0.7994748812722261,
+    "test_acc": 0.815,
+    "test_macro_f1": 0.8061383364076268,
+    "per_class_test": {
+      "0": {
+        "precision": 0.6643835616438356,
+        "recall": 0.7461538461538462,
+        "f1": 0.7028985507246377,
+        "support": 130
+      },
+      "1": {
+        "precision": 0.79,
+        "recall": 0.8681318681318682,
+        "f1": 0.8272251308900523,
+        "support": 91
+      },
+      "2": {
+        "precision": 0.8881118881118881,
+        "recall": 0.8819444444444444,
+        "f1": 0.8850174216027874,
+        "support": 144
+      },
+      "3": {
+        "precision": 0.9028776978417267,
+        "recall": 0.786833855799373,
+        "f1": 0.8408710217755444,
+        "support": 319
+      },
+      "4": {
+        "precision": 0.7660818713450293,
+        "recall": 0.8791946308724832,
+        "f1": 0.81875,
+        "support": 149
+      },
+      "5": {
+        "precision": 0.8602150537634409,
+        "recall": 0.7766990291262136,
+        "f1": 0.8163265306122449,
+        "support": 103
+      },
+      "6": {
+        "precision": 0.7246376811594203,
+        "recall": 0.78125,
+        "f1": 0.7518796992481203,
+        "support": 64
+      }
+    },
+    "best_epoch": 75,
+    "best_selection_score": 0.808,
+    "train_time_sec": 4.1745946407318115
+  },
+  "dataset": "cora",
+  "arch": "gcn",
+  "layers": 2,
+  "seed": 1002,
+  "replaced_from_seed": null,
+  "hyperparameters": {
+    "hidden_dim": 64,
+    "dropout": 0.5,
+    "lr": 0.01,
+    "weight_decay": 0.0005,
+    "epochs": 200,
+    "selection": "best_val_acc",
+    "class_weights": null
+  },
+  "data_sha256": "f2846a82cdd1e5b5a0804baad24c997a7720b27155a6c9655730bd6c42836268",
+  "versions": {
+    "python": "3.12.9",
+    "torch": "2.15.0",
+    "torch_geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scipy": "1.18.1",
+    "sklearn": "1.9.1",
+    "yaml": "6.0.4"
+  },
+  "git": {
+    "git_commit": "cf55fb3f832662cc7a3ceb03ab1348e00cdf4e8d",
+    "git_dirty": true
+  },
+  "command": "python scripts/train_gnn.py --dataset cora --seeds 1000 1001 1002 1003 1004",
+  "device": "cpu",
+  "thresholds": {
+    "meets_target": true,
+    "meets_min": true,
+    "failure_reason": ""
+  }
+}
