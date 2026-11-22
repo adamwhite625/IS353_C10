@@ -2,10 +2,11 @@
 
 from .gcn import GCN
 from .gat import GAT
-from .checkpoint import load_gcn_checkpoint
+from .checkpoint import load_gcn_checkpoint, save_gcn_checkpoint
 
 __all__ = [
     'GCN',
     'GAT',
     'load_gcn_checkpoint',
+    'save_gcn_checkpoint',
 ]

@@ -15,6 +15,13 @@ from .types import (
     ExplainerResult,
     MetricResult,
 )
+from .repro import (
+    compute_sha256,
+    get_git_info,
+    get_env_versions,
+    build_manifest,
+    save_manifest,
+)
 
 __all__ = [
     'PROJECT_ROOT',
@@ -28,4 +35,9 @@ __all__ = [
     'CandidateEdgesResult',
     'ExplainerResult',
     'MetricResult',
+    'compute_sha256',
+    'get_git_info',
+    'get_env_versions',
+    'build_manifest',
+    'save_manifest',
 ]

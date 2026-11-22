@@ -1,0 +1,85 @@
+{
+  "checkpoint_path": "/Users/nguyenlebaodang/Downloads/IS353_C10/results/checkpoints/bashapes/gcn_s1004.pt",
+  "checkpoint_sha256": "022e02fca54155902b9a7d8b3b647dd164e97e7b0db0e1b452c30ef3a3455459",
+  "in_dim": 10,
+  "hidden_dim": 32,
+  "n_classes": 4,
+  "dropout": 0.0,
+  "metrics": {
+    "train_acc": 0.9714285714285714,
+    "val_acc": 0.9642857142857143,
+    "val_macro_f1": 0.9606976172930484,
+    "test_acc": 0.9714285714285714,
+    "test_macro_f1": 0.9686274509803922,
+    "per_class_test": {
+      "0": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 60
+      },
+      "1": {
+        "precision": 0.8888888888888888,
+        "recall": 1.0,
+        "f1": 0.9411764705882353,
+        "support": 32
+      },
+      "2": {
+        "precision": 1.0,
+        "recall": 0.875,
+        "f1": 0.9333333333333333,
+        "support": 32
+      },
+      "3": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 16
+      }
+    },
+    "best_epoch": 548,
+    "best_selection_score": 0.9606976172930484,
+    "train_time_sec": 1.4826178550720215
+  },
+  "dataset": "bashapes",
+  "arch": "gcn",
+  "layers": 2,
+  "seed": 1004,
+  "replaced_from_seed": null,
+  "hyperparameters": {
+    "hidden_dim": 32,
+    "dropout": 0.0,
+    "lr": 0.01,
+    "weight_decay": 0.0001,
+    "epochs": 600,
+    "selection": "best_val_macro_f1",
+    "class_weights": [
+      0.5833,
+      1.0938,
+      1.0938,
+      2.1875
+    ]
+  },
+  "data_sha256": "d3412b938f973f5f0625a15a06de6dba0533bb221aa4c4b1aa9f9103ef026f49",
+  "versions": {
+    "python": "3.12.9",
+    "torch": "2.15.0",
+    "torch_geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scipy": "1.18.1",
+    "sklearn": "1.9.1",
+    "yaml": "6.0.4"
+  },
+  "git": {
+    "git_commit": "cf55fb3f832662cc7a3ceb03ab1348e00cdf4e8d",
+    "git_dirty": true
+  },
+  "command": "python scripts/train_gnn.py --dataset bashapes --seeds 1000 1001 1002 1003 1004",
+  "device": "cpu",
+  "thresholds": {
+    "meets_target": true,
+    "meets_min": true,
+    "failure_reason": ""
+  }
+}
