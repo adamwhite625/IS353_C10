@@ -1,13 +1,15 @@
 {
-  "git_commit": "4e83a4707b2ff436b9e2564cb6e649a1d549af16",
+  "git_commit": "113404551d6cab659884b24a4183fb6819e7afe5",
   "git_dirty": false,
-  "utc": "2026-11-20T12:59:07.873446+00:00",
+  "utc": "2026-11-22T07:10:03.993066+00:00",
   "argv": [
     "scripts/train_gnn.py",
     "--dataset",
     "bashapes",
+    "--data-root",
+    "/workspace/scratch/pn1-restored-run/data",
     "--out",
-    "/tmp/pn1-clean-output/checkpoints"
+    "/workspace/scratch/pn1-restored-run/checkpoints"
   ],
   "python": "3.12.14",
   "versions": {
@@ -17,13 +19,13 @@
     "pandas": "3.1.1",
     "scikit-learn": "1.9.1"
   },
-  "protocol_sha256": "e7ca7fd4a34bd22bdc527a4231b1c837625a225d1d8488e241d65b0aa9e2398e",
+  "protocol_sha256": "6772f23d526fa4cf803b2a5fafb1603e69f9d9d88bb19ef3eab1427b0ee04c6e",
   "device": "cpu",
   "dataset": "bashapes",
   "seed": 1002,
   "mode": "full",
-  "data_sha256": "63289ca8c3dd0113d6c3e1e64a9663e1826abdb036dec3771db61aa579d87847",
-  "checkpoint_sha256": "9306d40420111f606fbab9f274a2f2e593849f13af263a600f942ae605a0ad60",
+  "data_sha256": "8fbf94a7ce5850dbdae4a0cd13b178aaa3db1b7009a12efcef8e47306b2c3c73",
+  "checkpoint_sha256": "d7597424ea8e782e97d52a5dc1180117ef6aadb98baf61b05d7f18f3b01a0669",
   "model_config_sha256": "0cb556c3520131866aaacca0219c1ca02e5f29dd4c6070f829a47036025f4e1b",
   "model_config": {
     "arch": "gcn",
@@ -42,8 +44,8 @@
     "selection": "best_val_macro_f1"
   },
   "epochs": 600,
-  "best_epoch": 559,
-  "best_val_score": 0.8765630700852434,
+  "best_epoch": 549,
+  "best_val_score": 0.9122773557995291,
   "class_weights": [
     0.5833333134651184,
     1.09375,
@@ -51,32 +53,32 @@
     2.1875
   ],
   "metrics": {
-    "train_acc": 0.919047619047619,
-    "train_macro_f1": 0.8813724069646695,
+    "train_acc": 0.9476190476190476,
+    "train_macro_f1": 0.9388492305016956,
     "train_recall": [
       1.0,
-      0.96875,
-      0.8333333333333334,
-      0.6875
+      0.9895833333333334,
+      0.8125,
+      0.9375
     ],
-    "val_acc": 0.9214285714285714,
-    "val_macro_f1": 0.8765630700852434,
+    "val_acc": 0.9357142857142857,
+    "val_macro_f1": 0.9122773557995291,
     "val_recall": [
       1.0,
       1.0,
       0.84375,
-      0.625
+      0.75
     ],
-    "test_acc": 0.9285714285714286,
-    "test_macro_f1": 0.9022761346599428,
+    "test_acc": 0.9428571428571428,
+    "test_macro_f1": 0.9296934865900384,
     "test_recall": [
       1.0,
-      0.96875,
-      0.78125,
+      1.0,
+      0.8125,
       0.875
     ]
   },
-  "training_sec": 2.2852602580001076,
+  "training_sec": 2.95890635700016,
   "predictions_reload_match": true,
   "accepted_by_plan": true
 }

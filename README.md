@@ -332,7 +332,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-lock.txt
 python -m pip install -e . --no-deps
-python scripts/prepare_datasets.py --cora-data /path/to/cora/data.pt
+python scripts/prepare_datasets.py --bashapes-data /path/to/bashapes/data.pt --cora-data /path/to/cora/data.pt
 python scripts/make_node_lists.py
 python scripts/train_gnn.py --dataset bashapes
 python scripts/train_gnn.py --dataset cora
@@ -340,8 +340,10 @@ python scripts/analyze_degree_mechanisms.py
 python scripts/reproduce_all.py --smoke
 ```
 
-`prepare_datasets.py` tự sinh BA-Shapes vào `results/data`. Cora cần file gốc có
-SHA-256 khớp manifest T06. Các danh sách test trong `data/*/test_nodes.json`
+`prepare_datasets.py` đưa hai `data.pt` gốc vào `results/data` sau khi kiểm tra
+SHA-256 theo giao thức. Dùng BA-Shapes từ `data_goc_giuaki_BAShapes_Cora.zip` và
+Cora từ `02_Du_lieu.zip`. Nếu còn bản BA-Shapes tái dựng trong `results/data`,
+hãy giữ bản cũ ở thư mục riêng hoặc chạy bằng `--data-root` mới. Các danh sách test trong `data/*/test_nodes.json`
 ghi SHA-256 của dữ liệu tương ứng. File YAML trong `configs/datasets/` là nguồn
 cấu hình train cuối kỳ. Bảng checkpoint nằm ở `results/checkpoints/checkpoint_table.csv`,
 kết quả T2–T3 nằm ở `results/analysis/a3_t2_t3/`.
@@ -353,12 +355,13 @@ python scripts/prepare_integration_assets.py
 SNA_DATA_ROOT="$PWD/results/test-assets" OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python -m pytest tests/ -q
 ```
 
-Trên clone sạch, có thể chạy ngay smoke bằng cách thêm
-`--cora-data /path/to/cora/data.pt`. Smoke tạo kết quả riêng dưới `results/smoke/`.
+Trên clone sạch, chạy smoke với cả hai tham số `--bashapes-data` và `--cora-data`
+như ở bước chuẩn bị dữ liệu. Smoke tạo kết quả riêng dưới `results/smoke/`.
 Lệnh đầy đủ `python scripts/reproduce_all.py` cần các entry point
 `run_explainers.py`, `check_scores.py`, `evaluate.py`, `analyze_variance.py` và
 `error_analysis.py` theo hợp đồng bàn giao PN2/PN3. `run_explainers.py` và
-`evaluate.py` nhận `--data-root` trỏ đến dữ liệu cuối kỳ. Các seed, đường dẫn
+`check_scores.py` nhận `--data-dir`; giao diện dự kiến của `evaluate.py` nhận `--data-root`.
+Cả ba bước phải trỏ đến dữ liệu cuối kỳ. Các seed, đường dẫn
 checkpoint, danh sách test và cột CSV theo [giao thức](configs/protocol_final.yaml).
 
 Các notebook và bảng giữa kỳ là tư liệu lịch sử. Xem [biên bản GATE 0](docs/GATE0_TAI_LAP_GIUA_KY.md)
