@@ -1,0 +1,84 @@
+{
+  "git_commit": "113404551d6cab659884b24a4183fb6819e7afe5",
+  "git_dirty": false,
+  "utc": "2026-11-22T07:10:06.989504+00:00",
+  "argv": [
+    "scripts/train_gnn.py",
+    "--dataset",
+    "bashapes",
+    "--data-root",
+    "/workspace/scratch/pn1-restored-run/data",
+    "--out",
+    "/workspace/scratch/pn1-restored-run/checkpoints"
+  ],
+  "python": "3.12.14",
+  "versions": {
+    "torch": "2.15.0+cpu",
+    "torch-geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1"
+  },
+  "protocol_sha256": "6772f23d526fa4cf803b2a5fafb1603e69f9d9d88bb19ef3eab1427b0ee04c6e",
+  "device": "cpu",
+  "dataset": "bashapes",
+  "seed": 1003,
+  "mode": "full",
+  "data_sha256": "8fbf94a7ce5850dbdae4a0cd13b178aaa3db1b7009a12efcef8e47306b2c3c73",
+  "checkpoint_sha256": "a41d45387f813f9d1fd28c8e024b3b04f358d9a63074a44ab611f03ca963e0a3",
+  "model_config_sha256": "0cb556c3520131866aaacca0219c1ca02e5f29dd4c6070f829a47036025f4e1b",
+  "model_config": {
+    "arch": "gcn",
+    "layers": 2,
+    "hidden_dim": 32,
+    "dropout": 0.0,
+    "lr": 0.01,
+    "weight_decay": 0.0001,
+    "epochs": 600,
+    "class_weights": [
+      0.5833,
+      1.0938,
+      1.0938,
+      2.1875
+    ],
+    "selection": "best_val_macro_f1"
+  },
+  "epochs": 600,
+  "best_epoch": 533,
+  "best_val_score": 0.9122773557995291,
+  "class_weights": [
+    0.5833333134651184,
+    1.09375,
+    1.09375,
+    2.1875
+  ],
+  "metrics": {
+    "train_acc": 0.9476190476190476,
+    "train_macro_f1": 0.9388492305016956,
+    "train_recall": [
+      1.0,
+      0.9895833333333334,
+      0.8125,
+      0.9375
+    ],
+    "val_acc": 0.9357142857142857,
+    "val_macro_f1": 0.9122773557995291,
+    "val_recall": [
+      1.0,
+      1.0,
+      0.84375,
+      0.75
+    ],
+    "test_acc": 0.9428571428571428,
+    "test_macro_f1": 0.9296934865900384,
+    "test_recall": [
+      1.0,
+      1.0,
+      0.8125,
+      0.875
+    ]
+  },
+  "training_sec": 2.9886501050000334,
+  "predictions_reload_match": true,
+  "accepted_by_plan": true
+}
