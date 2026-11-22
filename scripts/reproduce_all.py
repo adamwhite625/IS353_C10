@@ -119,9 +119,11 @@ def run_full(data_root, spec):
         scores = Path('results/scores') / dataset
         evaluation = Path('results/eval') / f'{dataset}_test'
         run_script('run_explainers', '--dataset', dataset, '--split', 'test',
-                   '--data-root', data_root, '--gnn-seeds', *selections[dataset],
+                   '--data-dir', data_root, '--nodes-file', Path('data') / dataset / 'test_nodes.json',
+                   '--gnn-seeds', *selections[dataset], '--protocol-saliency',
                    '--explainer-seeds', *spec['explainer_seeds'], '--methods', *spec['methods'])
-        run_script('check_scores', scores)
+        run_script('check_scores', scores, '--data-dir', data_root,
+                   '--expected-nodes-file', Path('data') / dataset / 'test_nodes.json')
         run_script('evaluate', '--dataset', dataset, '--data-root', data_root,
                    '--scores', scores, '--out', evaluation)
         run_script('analyze_variance', '--eval', evaluation)
@@ -133,6 +135,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--smoke', action='store_true')
     parser.add_argument('--data-root', type=Path)
+    parser.add_argument('--bashapes-data', type=Path)
     parser.add_argument('--cora-data', type=Path)
     args = parser.parse_args()
     spec = protocol()
@@ -141,15 +144,18 @@ def main():
         smoke_root.mkdir(parents=True, exist_ok=True)
         output = Path(mkdtemp(prefix='run-', dir=smoke_root))
         data_root = args.data_root or output / 'data'
-        local_cora = PROJECT_ROOT / 'results/data/cora/data.pt'
-        cora_data = args.cora_data or (local_cora if local_cora.exists() else None)
-        prepare(data_root, cora_data)
+        local = PROJECT_ROOT / 'results/data'
+        sources = {}
+        for ds in spec['dataset_order']:
+            path = local / ds / 'data.pt'
+            sources[f'{ds}_data'] = getattr(args, f'{ds}_data') or (path if path.exists() else None)
+        prepare(data_root, **sources)
         for dataset in spec['dataset_order']:
             smoke_dataset(dataset, data_root, output, spec)
         print(f'Smoke results: {output}')
     else:
         data_root = args.data_root or PROJECT_ROOT / 'results/data'
-        prepare(data_root, args.cora_data)
+        prepare(data_root, bashapes_data=args.bashapes_data, cora_data=args.cora_data)
         run_full(data_root.resolve(), spec)
 
 

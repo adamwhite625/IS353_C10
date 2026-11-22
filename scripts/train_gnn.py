@@ -10,7 +10,7 @@ import torch
 import torch.nn.functional as F
 
 from sna.core.config import PROJECT_ROOT, load_yaml_config
-from sna.core.provenance import execution_metadata, protocol, sha256, write_json
+from sna.core.provenance import execution_metadata, protocol, sha256, verify_protocol_data, write_json
 from sna.core.seed import set_global_seed
 from sna.models.gcn import GCN
 
@@ -143,6 +143,7 @@ def train_dataset(dataset, data_root, output, seeds, epochs=None):
     spec = protocol()
     dest = output / dataset
     data_path = data_root / dataset / 'data.pt'
+    verify_protocol_data(dataset, data_path)
     attempts = []
     selected = []
     next_seed = max(spec['bashapes_replacement']['next_seed'], max(seeds) + 1)

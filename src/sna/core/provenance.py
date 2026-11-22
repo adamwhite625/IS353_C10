@@ -23,6 +23,13 @@ def sha256(path):
         return hashlib.file_digest(f, 'sha256').hexdigest()
 
 
+def verify_protocol_data(dataset, path):
+    digest = sha256(path)
+    if digest != protocol()['datasets'][dataset]['data_sha256']:
+        raise ValueError(f'{dataset}: {path} does not match protocol SHA-256')
+    return digest
+
+
 def write_json(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)

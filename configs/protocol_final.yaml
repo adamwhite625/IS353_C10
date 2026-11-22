@@ -5,8 +5,8 @@ torch_threads: 2
 dataset_order: [bashapes, cora]
 datasets:
   bashapes:
-    source: reconstructed
-    graph_seed: 0
+    source: archived_t06
+    data_sha256: 8fbf94a7ce5850dbdae4a0cd13b178aaa3db1b7009a12efcef8e47306b2c3c73
     split_seed: 0
     test_nodes: all
   cora:

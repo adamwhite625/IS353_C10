@@ -5,7 +5,7 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 import torch
 
-from sna.core.provenance import protocol, sha256, write_json
+from sna.core.provenance import protocol, verify_protocol_data, write_json
 
 
 def select_nodes(dataset, data, spec):
@@ -33,11 +33,12 @@ def main():
     args = parser.parse_args()
     for ds in args.datasets:
         path = args.data_root / ds / 'data.pt'
+        data_hash = verify_protocol_data(ds, path)
         data = torch.load(path, weights_only=True, map_location='cpu')
         nodes = select_nodes(ds, data, protocol()['datasets'][ds])
         counts = torch.bincount(data['y'][nodes], minlength=data['stats']['classes']).tolist()
         write_json(args.output / ds / 'test_nodes.json', {
-            'dataset': ds, 'split': 'test', 'data_sha256': sha256(path),
+            'dataset': ds, 'split': 'test', 'data_sha256': data_hash,
             'nodes': nodes, 'class_counts': counts,
         })
         print(f'{ds}: {len(nodes)} node; class counts {counts}')

@@ -5,3 +5,4 @@
 - 20/11/2026 — PN1. Dùng bản Cora có SHA-256 khớp T06. Không có checkpoint Cora giữa kỳ trong file bàn giao. Checkpoint cuối kỳ được huấn luyện mới.
 - 20/11/2026 — PN1. Smoke dùng 1 seed GNN, 5 node có cạnh ứng viên mỗi dataset và ít epoch. Lượt đầy đủ dùng các entry point bàn giao của PN2/PN3. Đánh dấu giao thức chính thức sau khi các phần F1–F8 qua GATE 1.
 - 20/11/2026 — Vũ xác nhận BA-Shapes tái dựng và checkpoint Cora huấn luyện mới là đầu vào chính thức cho cuối kỳ. Dữ liệu Cora giữ bản khớp manifest T06.
+- 22/11/2026 — Theo xác nhận của Vũ, thay BA-Shapes tái dựng bằng đúng BA-Shapes giữa kỳ từ `data_goc_giuaki_BAShapes_Cora.zip`. Khóa SHA-256 của dữ liệu, giữ split gốc, tạo lại danh sách test và huấn luyện lại đủ hai bộ checkpoint. File Cora giữ SHA-256 cũ vì đã đúng bản T06. Checkpoint trong ZIP chỉ dùng để kiểm tra giữa kỳ.

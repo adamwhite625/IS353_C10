@@ -23,7 +23,7 @@ def measure(data_path, node_path, checkpoint_root, output):
     edges, x = data['edge_index'], data['x']
     num_nodes = x.shape[0]
     degree_before = degree(edges[0], num_nodes, dtype=x.dtype)
-    if not (torch.equal(degree_before, x[:, 0]) and torch.equal(degree_before.sqrt(), x[:, 1])):
+    if not (torch.equal(degree_before, x[:, 0]) and torch.allclose(degree_before.sqrt(), x[:, 1], atol=1e-6, rtol=0)):
         raise ValueError('T3 expects raw degree and square-root degree in columns 0 and 1')
     canonical = edges.min(0).values * num_nodes + edges.max(0).values
     masks = {}
@@ -56,8 +56,9 @@ def measure(data_path, node_path, checkpoint_root, output):
                     retained = edges[:, ~mask]
                     degree_after = degree(retained[0], num_nodes, dtype=x.dtype)
                     changed = x.clone()
-                    changed[:, 0] = degree_after
-                    changed[:, 1] = degree_after.sqrt()
+                    changed_nodes = degree_after != degree_before
+                    changed[changed_nodes, 0] = degree_after[changed_nodes]
+                    changed[changed_nodes, 1] = degree_after[changed_nodes].sqrt()
                     fixed = float(model(x, retained)[node].softmax(-1)[target])
                     refreshed = float(model(changed, retained)[node].softmax(-1)[target])
                     rows.append({
