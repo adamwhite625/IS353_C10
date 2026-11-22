@@ -166,7 +166,7 @@ repo/
 │   ├── test_evaluation_duc_kha.py       # [MỚI] Kiểm tra logic baseline và metrics
 │   └── test_evaluation_runner.py        # [MỚI] Kiểm tra luồng chạy và xuất kết quả
 │
-└── data/                               # Dữ liệu cục bộ (chỉ chứa metadata/json, *.pt lưu trên Drive)
+└── data/                               # Dữ liệu giữa kỳ (data.pt, gcn_ckpt.pt đã có trên Git)
     ├── bashapes/                       # Dữ liệu BA-Shapes và checkpoint GCN 93.57%
     └── cora/                           # Dữ liệu Cora và checkpoint GCN 83.60%
 ```
@@ -189,21 +189,15 @@ repo/
 
   * Các file bảng điểm kết quả (`scores_thien.csv`, `scores_khoi.csv`, `edge_scores.csv`, `edge_scores_with_baselines.csv`) phục vụ bàn giao giữa kỳ.
 
-  * File `.gitignore` tự động loại bỏ các file nhị phân lớn (`*.pt`, `*.ckpt`) để GitHub luôn nhẹ và đồng bộ nhanh.
+  * **Dữ liệu và checkpoint chính thức (~18 MB, từ 22/11/2026):** `data/{bashapes,cora}/{data.pt,gcn_ckpt.pt}` (giữa kỳ), `results/data/{bashapes,cora}/data.pt` và 10 checkpoint `results/checkpoints/{bashapes,cora}/gcn_s1000.pt`–`gcn_s1004.pt`. Clone về là chạy được, không cần tải gói riêng. Hash của từng file nằm trong JSON đi kèm; các script dừng nếu lệch.
+
+  * `.gitignore` vẫn chặn mọi file `*.pt` khác; chỉ các file trên được ngoại lệ.
 
 * **Lưu trên Google Drive (Các file nặng):**
 
-  * Thư mục Drive nhóm: [Google Drive Nhóm 09](https://drive.google.com/drive/folders/1AXfG73xtbbCh3K1gopr-MDdEPYzaN51a?usp=sharing).
+  * Thư mục Drive nhóm: [Google Drive Nhóm 09](https://drive.google.com/drive/folders/1AXfG73xtbbCh3K1gopr-MDdEPYzaN51a?usp=sharing).
 
-  * Chứa các file weights lớn: `data.pt`, `gcn_ckpt.pt`.
-
-  * Khi clone repo về, thành viên chỉ cần chạy:
-
-    ```powershell
-
-    python scripts/download_drive_assets.py
-
-    ```
+  * CSV điểm cạnh của lưới 5×5 (`results/scores/**/*.csv`, hàng trăm MB). `run_log.json` trên Git ghi SHA-256 của từng CSV để kiểm tra sau khi tải. Giải nén vào `results/scores/` rồi chạy `python scripts/check_scores.py results/scores/<dataset>`.
 
 
 

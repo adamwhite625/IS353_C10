@@ -1,7 +1,14 @@
 """PGExplainer (Thiện phụ trách).
 Mạng neural MLP dự đoán cạnh quan trọng theo cấu trúc chuẩn canonical (Luo et al., NeurIPS 2020).
 MLP nhận concatenated node embeddings [z_u || z_v || z_target] và tối ưu hóa Mutual Information
-với Size và Entropy regularization trên các đồ thị con 2-hop của tập train_mask (BG03).
+với Size và Entropy regularization trên tập train_mask (BG03).
+
+Cập nhật cuối kỳ (KE_HOACH_CUOI_KY_FINAL.md):
+- F1: seed toàn cục được đặt TRƯỚC khi khởi tạo trọng số MLP (tham số ``seed`` của
+  ``PGExplainerModel``), nên cùng seed luôn cho cùng mask bất kể trạng thái RNG trước đó.
+- F9: khi huấn luyện, forward chạy trên đồ thị con ``forward_hops`` = 3 (L+1 với GCN 2 lớp)
+  để bậc của các nút ở rìa 2-hop được tính đúng; mask chỉ đặt trên cạnh ứng viên 2-hop,
+  các cạnh còn lại giữ trọng số 1. ``forward_hops=2`` tái tạo hành vi giữa kỳ.
 """
 
 import time
@@ -11,9 +18,101 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.data import Data, Batch
+from torch_geometric.utils import k_hop_subgraph
+from sna.core.seed import set_global_seed
 from sna.core.types import ExplainerResult, CandidateEdgesResult
 from sna.explainers.base import BaseExplainer
 from sna.data.candidate_edges import extract_candidate_edges
+
+# Số hop của tập cạnh ứng viên (giải thích) và của đồ thị con dùng để forward khi huấn luyện.
+CANDIDATE_HOPS = 2
+DEFAULT_FORWARD_HOPS = 3
+
+
+def build_forward_subgraph(
+    edge_index: torch.Tensor,
+    node: int,
+    candidate_edges: CandidateEdgesResult,
+    forward_hops: int,
+    num_nodes: int,
+) -> Dict[str, torch.Tensor]:
+    """Dựng đồ thị con ``forward_hops``-hop quanh ``node`` để forward khi huấn luyện PGExplainer.
+
+    Trả về:
+        sub_nodes: chỉ số toàn cục của các node trong đồ thị con.
+        local_edge_index: cạnh của đồ thị con, đánh số lại theo ``sub_nodes``.
+        local_target: vị trí của ``node`` trong ``sub_nodes``.
+        edge_pair_idx: với mỗi cạnh có hướng của đồ thị con, chỉ số cặp ứng viên
+            (theo ``candidate_edges.candidate_pairs``), hoặc -1 nếu cạnh không phải ứng viên
+            (cạnh đó sẽ giữ trọng số 1).
+    """
+    if forward_hops < CANDIDATE_HOPS:
+        raise ValueError(
+            f"forward_hops ({forward_hops}) must be >= candidate hops ({CANDIDATE_HOPS})."
+        )
+    sub_nodes, local_edge_index, mapping, edge_mask = k_hop_subgraph(
+        node_idx=int(node),
+        num_hops=int(forward_hops),
+        edge_index=edge_index,
+        relabel_nodes=True,
+        num_nodes=num_nodes,
+    )
+    global_edges = edge_index[:, edge_mask]
+    # Bỏ self-loop có sẵn trong dữ liệu để khớp với tập cạnh ứng viên (GCNConv tự thêm self-loop).
+    keep = global_edges[0] != global_edges[1]
+    global_edges = global_edges[:, keep]
+    local_edge_index = local_edge_index[:, keep]
+
+    device = edge_index.device
+    lo = torch.minimum(global_edges[0], global_edges[1])
+    hi = torch.maximum(global_edges[0], global_edges[1])
+    edge_keys = lo * num_nodes + hi
+
+    pairs = candidate_edges.candidate_pairs
+    if len(pairs) == 0:
+        edge_pair_idx = torch.full((edge_keys.numel(),), -1, dtype=torch.long, device=device)
+    else:
+        pair_t = torch.tensor(pairs, dtype=torch.long, device=device)
+        pair_keys = pair_t[:, 0] * num_nodes + pair_t[:, 1]
+        sorted_keys, order = torch.sort(pair_keys)
+        pos = torch.searchsorted(sorted_keys, edge_keys).clamp(max=sorted_keys.numel() - 1)
+        hit = sorted_keys[pos] == edge_keys
+        edge_pair_idx = torch.where(hit, order[pos], torch.full_like(pos, -1))
+
+    return {
+        'sub_nodes': sub_nodes,
+        'local_edge_index': local_edge_index,
+        'local_target': int(mapping[0].item()),
+        'edge_pair_idx': edge_pair_idx,
+    }
+
+
+class _DeterministicAlgorithms:
+    """Tạm bật ``torch.use_deterministic_algorithms`` rồi khôi phục trạng thái cũ.
+
+    Đồ thị con 3-hop gộp batch đủ lớn để phép scatter trên CPU chạy song song, khiến thứ tự
+    cộng số thực thay đổi giữa các lần chạy: trên BA-Shapes, hai lượt cùng seed lệch tới 0,30
+    ở trọng số MLP. Chế độ tất định loại bỏ sai lệch này mà không làm chậm trên CPU.
+    """
+
+    def __enter__(self):
+        self._prev = torch.are_deterministic_algorithms_enabled()
+        self._prev_warn = torch.is_deterministic_algorithms_warn_only_enabled()
+        torch.use_deterministic_algorithms(True, warn_only=True)
+        return self
+
+    def __exit__(self, *exc):
+        torch.use_deterministic_algorithms(self._prev, warn_only=self._prev_warn)
+        return False
+
+
+def expand_pair_weights(pair_weights: torch.Tensor, edge_pair_idx: torch.Tensor) -> torch.Tensor:
+    """Gán trọng số cặp ứng viên cho từng cạnh có hướng; cạnh không phải ứng viên nhận 1."""
+    ones = torch.ones(edge_pair_idx.numel(), device=pair_weights.device, dtype=pair_weights.dtype)
+    if pair_weights.numel() == 0:
+        return ones
+    gathered = pair_weights[edge_pair_idx.clamp(min=0)]
+    return torch.where(edge_pair_idx >= 0, gathered, ones)
 
 
 class PGExplainerMLP(nn.Module):
@@ -80,8 +179,12 @@ class PGExplainerModel:
         model: nn.Module,
         emb_dim: Optional[int] = None,
         hidden_dim: int = 64,
-        device: Optional[torch.device] = None
+        device: Optional[torch.device] = None,
+        seed: Optional[int] = None
     ):
+        # F1: khóa RNG trước khi tạo trọng số MLP để khởi tạo tái lập được.
+        if seed is not None:
+            set_global_seed(int(seed))
         self.model = model
         self.device = device or next(model.parameters()).device
         if emb_dim is None:
@@ -116,7 +219,12 @@ class PGExplainerModel:
                 z = self.model(x.to(self.device), edge_index.to(self.device))
         return z
 
-    def train_on_graph(
+    def train_on_graph(self, *args, **kwargs) -> float:
+        """Huấn luyện PGExplainer trong chế độ tất định (xem ``_train_on_graph_impl``)."""
+        with _DeterministicAlgorithms():
+            return self._train_on_graph_impl(*args, **kwargs)
+
+    def _train_on_graph_impl(
         self,
         data: Dict[str, Any],
         epochs: int = 40,
@@ -126,9 +234,14 @@ class PGExplainerModel:
         coeff_size: Optional[float] = None,
         coeff_ent: Optional[float] = None,
         seed: int = 0,
-        batch_size: int = 32
+        batch_size: int = 32,
+        forward_hops: int = DEFAULT_FORWARD_HOPS
     ) -> float:
-        """Huấn luyện PGExplainer chỉ trên train_mask (BG03) qua 2-hop computation subgraphs."""
+        """Huấn luyện PGExplainer chỉ trên train_mask (BG03).
+
+        Mask được học trên cạnh ứng viên 2-hop; forward chạy trên đồ thị con ``forward_hops``-hop
+        (mặc định 3 = L+1 cho GCN 2 lớp, F9). ``forward_hops=2`` tái tạo cách làm giữa kỳ.
+        """
         torch.manual_seed(seed)
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(seed)
@@ -185,36 +298,29 @@ class PGExplainerModel:
             else:
                 full_preds = self.model(x, edge_index).argmax(dim=-1)
 
-        # Tiền trích xuất đồ thị con 2-hop cho các node trong train_mask
+        # Tiền trích xuất cạnh ứng viên 2-hop và đồ thị con forward cho các node trong train_mask
         precomputed: List[Dict[str, Any]] = []
         for node in train_node_indices:
-            cand = extract_candidate_edges(edge_index, node, num_hops=2, num_nodes=num_total_nodes)
+            cand = extract_candidate_edges(edge_index, node, num_hops=CANDIDATE_HOPS, num_nodes=num_total_nodes)
             if cand.num_candidate_edges == 0:
                 continue
 
-            sub_nodes = cand.subgraph_nodes.to(self.device)
-            node_map = {n.item(): i for i, n in enumerate(sub_nodes)}
-            local_target = node_map[node]
+            fwd = build_forward_subgraph(edge_index, node, cand, forward_hops, num_total_nodes)
 
             pairs = cand.candidate_pairs
             u_cand = torch.tensor([p[0] for p in pairs], device=self.device, dtype=torch.long)
             v_cand = torch.tensor([p[1] for p in pairs], device=self.device, dtype=torch.long)
             t_cand = torch.full_like(u_cand, node)
 
-            sub_edges = cand.subgraph_edge_index.to(self.device)
-            local_src = torch.tensor([node_map[u.item()] for u in sub_edges[0]], device=self.device, dtype=torch.long)
-            local_dst = torch.tensor([node_map[v.item()] for v in sub_edges[1]], device=self.device, dtype=torch.long)
-            local_edge_index = torch.stack([local_src, local_dst], dim=0)
-
             precomputed.append({
                 'node': node,
-                'sub_x': x[sub_nodes],
-                'local_edge_index': local_edge_index,
-                'local_target': local_target,
+                'sub_x': x[fwd['sub_nodes'].to(self.device)],
+                'local_edge_index': fwd['local_edge_index'].to(self.device),
+                'local_target': fwd['local_target'],
                 'u_cand': u_cand,
                 'v_cand': v_cand,
                 't_cand': t_cand,
-                'edge_to_pair_idx': cand.edge_to_pair_idx.to(self.device),
+                'edge_pair_idx': fwd['edge_pair_idx'].to(self.device),
                 'target_class': full_preds[node]
             })
 
@@ -260,7 +366,7 @@ class PGExplainerModel:
                 for k, idx in enumerate(b_idx):
                     item = precomputed[idx]
                     sw = soft_weight_slices[k]
-                    sub_w = sw[item['edge_to_pair_idx']]
+                    sub_w = expand_pair_weights(sw, item['edge_pair_idx'])
                     data_list.append(Data(x=item['sub_x'], edge_index=item['local_edge_index'], edge_weight=sub_w))
                     target_indices.append(curr_offset + item['local_target'])
                     curr_offset += item['sub_x'].size(0)
@@ -309,7 +415,8 @@ class PGExplainer(BaseExplainer):
 
             # Nếu chưa có model đã train, tự động train trên tập train_mask
             if self.pg_model is None or not self.pg_model.is_trained:
-                self.pg_model = PGExplainerModel(model=model, device=device)
+                # F1: seed trước khi khởi tạo MLP (không phụ thuộc trạng thái RNG của người gọi).
+                self.pg_model = PGExplainerModel(model=model, device=device, seed=seed)
                 self.pg_model.train_on_graph(
                     data=data,
                     epochs=cfg.get('epochs', 40),
@@ -318,7 +425,8 @@ class PGExplainer(BaseExplainer):
                     temp_min=cfg.get('temp_min', 0.5),
                     coeff_size=cfg.get('coeff_size', None),
                     coeff_ent=cfg.get('coeff_ent', None),
-                    seed=seed
+                    seed=seed,
+                    forward_hops=cfg.get('forward_hops', DEFAULT_FORWARD_HOPS)
                 )
             else:
                 if getattr(self.pg_model, 'device', None) != device:
