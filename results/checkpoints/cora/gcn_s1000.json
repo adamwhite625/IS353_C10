@@ -1,0 +1,82 @@
+{
+  "git_commit": "113404551d6cab659884b24a4183fb6819e7afe5",
+  "git_dirty": false,
+  "utc": "2026-11-22T07:10:29.464182+00:00",
+  "argv": [
+    "scripts/train_gnn.py",
+    "--dataset",
+    "cora",
+    "--data-root",
+    "/workspace/scratch/pn1-restored-run/data",
+    "--out",
+    "/workspace/scratch/pn1-restored-run/checkpoints"
+  ],
+  "python": "3.12.14",
+  "versions": {
+    "torch": "2.15.0+cpu",
+    "torch-geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1"
+  },
+  "protocol_sha256": "6772f23d526fa4cf803b2a5fafb1603e69f9d9d88bb19ef3eab1427b0ee04c6e",
+  "device": "cpu",
+  "dataset": "cora",
+  "seed": 1000,
+  "mode": "full",
+  "data_sha256": "f2846a82cdd1e5b5a0804baad24c997a7720b27155a6c9655730bd6c42836268",
+  "checkpoint_sha256": "9752ccdc224c08f7fc4c0632e4760e62b9d43dec6747fee42634950b48a19aa2",
+  "model_config_sha256": "eced815415577d1200f9d9dd600f9e907e75167578827962ef3bf4fd123f0278",
+  "model_config": {
+    "arch": "gcn",
+    "layers": 2,
+    "hidden_dim": 64,
+    "dropout": 0.5,
+    "lr": 0.01,
+    "weight_decay": 0.0005,
+    "epochs": 200,
+    "selection": "best_val_acc"
+  },
+  "epochs": 200,
+  "best_epoch": 75,
+  "best_val_score": 0.816,
+  "class_weights": null,
+  "metrics": {
+    "train_acc": 0.9928571428571429,
+    "train_macro_f1": 0.9928526757795051,
+    "train_recall": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.95,
+      1.0,
+      1.0
+    ],
+    "val_acc": 0.816,
+    "val_macro_f1": 0.8081541843433565,
+    "val_recall": [
+      0.7540983606557377,
+      0.8333333333333334,
+      0.9871794871794872,
+      0.7468354430379747,
+      0.8518518518518519,
+      0.8070175438596491,
+      0.7586206896551724
+    ],
+    "test_acc": 0.836,
+    "test_macro_f1": 0.8246356671891026,
+    "test_recall": [
+      0.8076923076923077,
+      0.8571428571428571,
+      0.8958333333333334,
+      0.8401253918495298,
+      0.825503355704698,
+      0.7961165048543689,
+      0.796875
+    ]
+  },
+  "training_sec": 14.900642187999892,
+  "predictions_reload_match": true,
+  "accepted_by_plan": true
+}

@@ -1,5 +1,6 @@
 """Cấu hình và đường dẫn hệ thống toàn cục cho đồ án."""
 
+import os
 import pathlib
 from typing import Dict, Any
 import json
@@ -7,7 +8,8 @@ import yaml
 
 # Thư mục gốc dự án
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent.parent
-DATA_DIR = PROJECT_ROOT / "data" if (PROJECT_ROOT / "data").exists() else PROJECT_ROOT / "t01_handover"
+_DEFAULT_DATA_DIR = PROJECT_ROOT / "data" if (PROJECT_ROOT / "data").exists() else PROJECT_ROOT / "t01_handover"
+DATA_DIR = pathlib.Path(os.environ.get("SNA_DATA_ROOT", _DEFAULT_DATA_DIR))
 NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
 CONFIGS_DIR = PROJECT_ROOT / "configs"
 DOCS_DIR = PROJECT_ROOT / "docs"

@@ -1,54 +1,44 @@
-"""Script hướng dẫn tải các asset nặng (weights, data) từ Google Drive của Nhóm 09.
-Tránh commit các file nhị phân lớn (.pt, .ckpt) lên GitHub.
-"""
-
-import pathlib
+"""Locate research assets and verify them after downloading from the team Drive."""
+import argparse
+import json
+from pathlib import Path
 import sys
 
-DRIVE_LINK = "https://drive.google.com/drive/folders/1AXfG73xtbbCh3K1gopr-MDdEPYzaN51a?usp=sharing"
+from sna.core.config import PROJECT_ROOT
+from sna.core.provenance import sha256
 
-ASSET_MAP = {
-    "bashapes": [
-        "data.pt",
-        "gcn_ckpt.pt",
-        "config.json",
-        "val_nodes.json"
-    ],
-    "cora": [
-        "data.pt",
-        "gcn_ckpt.pt",
-        "config.json",
-        "val_nodes.json"
-    ]
-}
+
+DRIVE_LINK = "https://drive.google.com/drive/folders/1Mfc4SMsLTqO8jTGRTMF5FjYYo39A1lTY?usp=sharing"
+T06 = PROJECT_ROOT / 'notebooks/05_duc_kha_evaluation/results/manifest.json'
+
+
+def verify(root, expected):
+    failures = 0
+    for name, digest in expected.items():
+        path = root / name
+        if not path.is_file():
+            print(f'MISSING {name}')
+            failures += 1
+        else:
+            actual = sha256(path)
+            status = 'OK' if actual == digest else 'HASH MISMATCH'
+            print(f'{status} {name} {actual}')
+            failures += actual != digest
+    return failures
 
 
 def main():
-    root = pathlib.Path(__file__).resolve().parent.parent
-    target_dir = root / "data" if (root / "data").exists() else root / "t01_handover"
-
-    print("=" * 60)
-    print("SNA Nhóm 09 - Hướng dẫn đồng bộ dữ liệu từ Google Drive")
-    print("=" * 60)
-    print(f"\nThư mục Google Drive của nhóm:\n  👉 {DRIVE_LINK}\n")
-    print(f"Thư mục lưu trữ đích trên máy local:\n  👉 {target_dir}\n")
-
-    missing = []
-    for ds, files in ASSET_MAP.items():
-        for f in files:
-            p = target_dir / ds / f
-            if not p.exists():
-                missing.append(f"{ds}/{f}")
-
-    if not missing:
-        print("✅ Toàn bộ các file dữ liệu và checkpoint đã có sẵn trên máy của bạn!")
-    else:
-        print("⚠️ Các file sau đang thiếu, vui lòng tải từ Drive và đặt vào đúng thư mục:")
-        for m in missing:
-            print(f"  - t01_handover/{m}")
-
-    print("\n" + "=" * 60)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--root', type=Path, default=PROJECT_ROOT / 'data')
+    parser.add_argument('--manifest', type=Path, default=T06,
+                        help='JSON containing a filename-to-SHA-256 "assets" mapping')
+    args = parser.parse_args()
+    manifest = json.loads(args.manifest.read_text(encoding='utf-8'))
+    if not manifest.get('assets'):
+        parser.error('Manifest has no assets')
+    print(f'Team Drive: {DRIVE_LINK}\nAsset root: {args.root}')
+    return int(verify(args.root, manifest['assets']) != 0)
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

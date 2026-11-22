@@ -122,3 +122,10 @@ wandb/
 # ------------------------------------------------------------------------------
 !sample_edge_scores.csv
 !notebooks/**/*.ipynb
+
+# Final experiment inputs, raw edge scores and transient smoke runs.
+/results/data/
+/results/smoke/
+/results/scores/**/*.csv
+/results/test-assets/
+/results/handoff/

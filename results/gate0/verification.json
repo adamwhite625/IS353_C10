@@ -1,0 +1,127 @@
+{
+  "assets_sha256": {
+    "bashapes/data.pt": "8fbf94a7ce5850dbdae4a0cd13b178aaa3db1b7009a12efcef8e47306b2c3c73",
+    "bashapes/gcn_ckpt.pt": "e751d9e112e5def02e0e80401afb132553ad9071036b4da34d6673e8bebe7b9c",
+    "bashapes/config.json": "acb5621d082c08fd5676e58d445fe15a369ec4ba8794b8f9e468d7b066137303",
+    "bashapes/val_nodes.json": "d24f19579a02c45aa4ac2a2832c53a885ee0d2287ba17e1fc1ca6ca84ac4cf45",
+    "cora/data.pt": "f2846a82cdd1e5b5a0804baad24c997a7720b27155a6c9655730bd6c42836268",
+    "cora/gcn_ckpt.pt": "145fc3bf22cdf1d6ce27df19b6ca42cd291f83f185f400e186414f1d7a67fe52",
+    "cora/config.json": "4709552b815c87bc68297f0662a54b1554ef21f96da03897f01c80ec1fa28fb8",
+    "cora/val_nodes.json": "29bc6f13efc3c8368153f30c8140bcc82ea1a8f1aa3db6b414c3a8c13dcd0796"
+  },
+  "source_scores_sha256": "102b49ffa3cc0a8e1acd187a0f2c2535fbf5c5b9d59dcaccc6e12076336152c2",
+  "t06_rerun": {
+    "summary_match_decimal_places": 4,
+    "errors": 0,
+    "metrics_rows": 2080,
+    "agreement_rows": 6080,
+    "comparisons": {
+      "summary.csv": {
+        "summary_rows": 240,
+        "max_diff_mean": 6.465706972602625e-08,
+        "max_diff_std": 8.373562096486431e-08
+      },
+      "agreement_summary.csv": {
+        "summary_rows": 160,
+        "max_diff_mean": 0.0,
+        "max_diff_std": 0.0
+      }
+    }
+  },
+  "seed42": {
+    "script_commit": "7736114",
+    "nodes_per_dataset": 20,
+    "checkpoint_predictions": {
+      "bashapes": {
+        "n_match": 700,
+        "n_total": 700
+      },
+      "cora": {
+        "n_match": 2708,
+        "n_total": 2708
+      }
+    },
+    "csv_comparison": {
+      "bashapes": {
+        "saliency": {
+          "n_nodes": 20,
+          "n_edges": 3473,
+          "max_diff_raw": 8.819274901483709e-07,
+          "mean_diff_raw": 2.5405427658300846e-07,
+          "max_diff_rounded_6dp": 1.000000000139778e-06,
+          "mean_diff_rounded_6dp": 3.7431615316527885e-09,
+          "worst_entry": {
+            "node_id": 692,
+            "edge_id": 3,
+            "pair": [
+              691,
+              692
+            ],
+            "computed": 3.9733328819274902,
+            "csv": 3.973332,
+            "diff": 8.819274901483709e-07
+          }
+        },
+        "gnnexplainer": {
+          "n_nodes": 20,
+          "n_edges": 3473,
+          "max_diff_raw": 5.748558044027519e-07,
+          "mean_diff_raw": 2.5277429487867616e-07,
+          "max_diff_rounded_6dp": 1.0000000000287557e-06,
+          "mean_diff_rounded_6dp": 1.1517420097270245e-09,
+          "worst_entry": {
+            "node_id": 51,
+            "edge_id": 201,
+            "pair": [
+              11,
+              185
+            ],
+            "computed": 0.9544705748558044,
+            "csv": 0.95447,
+            "diff": 5.748558044027519e-07
+          }
+        }
+      },
+      "cora": {
+        "saliency": {
+          "n_nodes": 20,
+          "n_edges": 703,
+          "max_diff_raw": 6.641578674804194e-07,
+          "mean_diff_raw": 2.5802675554326626e-07,
+          "max_diff_rounded_6dp": 1.0000000000287557e-06,
+          "mean_diff_rounded_6dp": 5.689900426787704e-09,
+          "worst_entry": {
+            "node_id": 282,
+            "edge_id": 5,
+            "pair": [
+              282,
+              747
+            ],
+            "computed": 0.6675806641578674,
+            "csv": 0.66758,
+            "diff": 6.641578674804194e-07
+          }
+        },
+        "gnnexplainer": {
+          "n_nodes": 20,
+          "n_edges": 703,
+          "max_diff_raw": 8.234710693333369e-07,
+          "mean_diff_raw": 2.563860433369012e-07,
+          "max_diff_rounded_6dp": 1.0000000000287557e-06,
+          "mean_diff_rounded_6dp": 1.28022759601835e-08,
+          "worst_entry": {
+            "node_id": 374,
+            "edge_id": 17,
+            "pair": [
+              1101,
+              2146
+            ],
+            "computed": 0.7910711765289307,
+            "csv": 0.791072,
+            "diff": 8.234710693333369e-07
+          }
+        }
+      }
+    }
+  }
+}
