@@ -48,12 +48,38 @@ def top_indices(order, k):
     return np.asarray(order, dtype=int)[:min(int(k), len(order))]
 
 
+def kappa_at_k(selected_a, selected_b, m):
+    """Chance-corrected top-k overlap: (|A∩B| - k²/m) / (k - k²/m).
+
+    Both selections must have the same size k = k_eff = min(k, m). Under
+    independent uniform top-k draws E|A∩B| = k²/m, so kappa = 0 is chance,
+    1 is identical and negative is below chance. Undefined (NaN) when m = 0,
+    k = 0 or k = m, because then every selection is forced.
+    Returns (kappa, reason).
+    """
+    sa, sb = set(selected_a), set(selected_b)
+    k, m = len(sa), int(m)
+    if len(sb) != k:
+        raise ValueError('kappa@k needs two selections of equal size')
+    if m < 0 or k > m:
+        raise ValueError('Selection larger than candidate set')
+    if m == 0:
+        return float('nan'), 'empty_candidates'
+    if k == 0:
+        return float('nan'), 'empty_selection'
+    if k == m:
+        return float('nan'), 'k_eff_equals_m'
+    expected = k * k / m
+    return (len(sa & sb) - expected) / (k - expected), ''
+
+
 def agreement(scores_a, scores_b, k, seed=0, order_a=None, order_b=None):
     a = validate_scores(scores_a)
     b = validate_scores(scores_b, len(a))
     oa = rank_edges(a, seed) if order_a is None else order_a
     ob = rank_edges(b, seed) if order_b is None else order_b
     sa, sb = set(top_indices(oa, k)), set(top_indices(ob, k))
+    kappa, kappa_reason = kappa_at_k(sa, sb, len(a))
     jac = len(sa & sb) / len(sa | sb) if sa | sb else float('nan')
     if len(a) < 2 or np.ptp(a) == 0 or np.ptp(b) == 0:
         tau, reason = float('nan'), 'constant_scores_or_too_few_edges'
@@ -61,7 +87,8 @@ def agreement(scores_a, scores_b, k, seed=0, order_a=None, order_b=None):
         tau = float(kendalltau(a, b, variant='b').statistic)
         reason = '' if np.isfinite(tau) else 'undefined_rank_correlation'
     return {'jaccard': jac, 'kendall_tau_b': tau, 'tau_reason': reason,
-            'jaccard_reason': '' if sa | sb else 'empty_selected_union'}
+            'jaccard_reason': '' if sa | sb else 'empty_selected_union',
+            'kappa': kappa, 'kappa_reason': kappa_reason}
 
 
 def ground_truth_metrics(pairs, scores, edge_index, gt_edge_mask, selected):
