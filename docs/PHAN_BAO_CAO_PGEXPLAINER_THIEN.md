@@ -45,6 +45,26 @@ Chạy 20 node dev, `--split val`, g = 1000 (checkpoint giữa kỳ), e = 0 và 
 
 **Ghi chú cho error analysis (T4):** sau khi sửa F1/F9, PGExplainer trên BA-Shapes **vẫn cho rất nhiều điểm hòa** (đa số cạnh có điểm sát 0). Giữa kỳ con số này là 40,7%. Vì vậy top-5 của PG trên BA-Shapes vẫn phụ thuộc nhiều vào phá hòa; PN3 cần đo lại trên tập test chính thức. Đây là quan sát trên 20 node dev, chưa phải kết luận.
 
+## 3b. Lưới PGExplainer chính thức (22/11/2026) — bàn giao H2
+
+Chạy trên tập **test** chính thức, 5 checkpoint GNN (g = 1000–1004, gói `PN1_H1_restored_T06.zip`, hash khớp JSON) × 5 seed explainer (e = 0–4), code `main` tại `7beff87`:
+
+```bash
+python scripts/run_explainers.py --dataset bashapes --split test --gnn-seeds 1000 1001 1002 1003 1004 --explainer-seeds 0 1 2 3 4 --methods pgexplainer --device cpu --resume
+python scripts/run_explainers.py --dataset cora --split test --gnn-seeds 1000 1001 1002 1003 1004 --explainer-seeds 0 1 2 3 4 --methods pgexplainer --device cpu --resume
+```
+
+| Dataset | Lượt (g × e) | Node test | Số dòng CSV | Trạng thái node | Train PG / lượt (TB, min–max) | `check_scores.py` |
+|---|---:|---:|---:|---|---:|---|
+| BA-Shapes | 25 | 140 | 597.000 | 3.500 / 3.500 `success` | 11,1 s (10,8–11,8) | **PASS** |
+| Cora | 25 | 100 | 174.625 | 2.500 / 2.500 `success` | 4,4 s (4,3–4,5) | **PASS** |
+
+- **Tái lập:** chạy lại một ô (g = 1003, e = 2) trên mỗi dataset cho điểm **trùng tuyệt đối** (lệch 0,0); chỉ cột `runtime_sec` khác.
+- **Ứng viên mỗi node:** BA-Shapes trung vị 14 (6–1.329), Cora trung vị 30 (1–395).
+- **Điểm hòa (cho T4):** tỷ lệ cạnh trùng điểm với cạnh khác trong cùng node: BA-Shapes TB 0,26 (trung vị 0); Cora TB 0,05. Tỷ lệ (node, lượt) có điểm thứ 5 = thứ 6: **BA-Shapes 19,3%** (n = 3.500), Cora 2,1% (n = 2.150 node có m > 5). Thấp hơn nhiều so với pilot 20 node dev (node dev có trung bình ~170 cạnh ứng viên, còn node test có trung vị 14), nhưng vẫn đủ để top-5 PG trên BA-Shapes phụ thuộc phá hòa ở ~1/5 trường hợp.
+- **Bàn giao:** CSV (154 MB) để ngoài Git, nén thành `PN2_H2_pgexplainer_scores_20261122.zip` (13 MB, có `SHA256SUMS.txt`) trên Drive nhóm. `run_log.json` (ghi `csv_sha256` từng lượt) được commit trong `results/scores/{dataset}/gcn_s*/`.
+- `run_log.json` ghi `git_dirty: true` vì lúc chạy cây làm việc có thay đổi `.gitignore`/README (không đụng code).
+
 ## 4. Đoạn cho báo cáo — Mục 3 (PGExplainer)
 
 > **PGExplainer** (Luo et al., 2020) học một MLP dùng chung, nhận vector `[z_u ‖ z_v ‖ z_t]` (embedding tầng 1 của GCN) và cho ra logit tồn tại của cạnh (u, v) khi giải thích node t. Logit được đối xứng hóa giữa hai chiều cạnh. MLP được huấn luyện trên các node train với hàm mất mát gồm cross-entropy giữ lớp dự đoán gốc, phạt kích thước (tổng mask của mỗi node) và phạt entropy, dùng Gumbel-Sigmoid với nhiệt độ giảm dần từ 5,0 xuống 0,5 trong 40 epoch (lr 0,005). Mask chỉ đặt trên cạnh ứng viên 2-hop; khi huấn luyện, mô hình được forward trên đồ thị con 3-hop để chuẩn hóa bậc của GCN khớp đồ thị đầy đủ. Mọi nguồn ngẫu nhiên (khởi tạo MLP, thứ tự batch, nhiễu Gumbel) được khóa bằng seed explainer; huấn luyện chạy ở chế độ tất định của PyTorch trên CPU. Khi giải thích, điểm cạnh là `sigmoid` của logit, tính trên embedding của đồ thị đầy đủ.
@@ -60,12 +80,7 @@ Chạy 20 node dev, `--split val`, g = 1000 (checkpoint giữa kỳ), e = 0 và 
 
 ## 6. Việc tiếp theo và ghi chú cho nhóm
 
-- **Chạy lưới PG chính thức** khi Vũ phát hành gói dữ liệu và checkpoint chính thức:
-  ```bash
-  python scripts/run_explainers.py --dataset bashapes --split test --gnn-seeds 1000 --explainer-seeds 0 1 2 3 4 --methods pgexplainer --device cpu --resume
-  python scripts/run_explainers.py --dataset bashapes --split test --gnn-seeds 1001 1002 1003 1004 --explainer-seeds 0 1 2 3 4 --methods pgexplainer --device cpu --resume
-  python scripts/check_scores.py results/scores/bashapes
-  ```
-  Chạy tương tự với `--dataset cora`.
+- ~~Chạy lưới PG chính thức~~ — **xong 22/11** (Mục 3b).
+- **Cho Khôi khi chạy GNNExplainer/Saliency:** giải nén `PN2_H2_pgexplainer_scores_20261122.zip` vào thư mục `repo` **trước**, rồi chạy với `--resume` vào cùng `results/scores/`. Như vậy `run_log.json` mỗi checkpoint chứa cả ba phương pháp và không bị conflict khi commit.
 - **Cho Khôi (refactor sau, không gấp):** `run_log.json` chưa ghi `forward_hops` trong `hyperparams` của PG. Nên thêm để manifest thể hiện F9. Hiện mặc định luôn là 3.
 - `registry.explain_edges` vẫn huấn luyện lại PG mỗi lần gọi. Kết quả đã tái lập được (F1), chỉ chậm. Pipeline chính thức không dùng đường này.
