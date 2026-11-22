@@ -276,6 +276,7 @@ def evaluate(dataset, data_path, scores_dir, checkpoints_dir, nodes_file, output
         by_eid = dict(zip(map(int, cand.edge_ids), pairs))
         canon = sorted(range(len(pairs)), key=lambda i: pairs[i])
         pairs = [pairs[i] for i in canon]
+        eid_of = {p: eid for eid, p in by_eid.items()}
         m = len(pairs)
         labels = None if labels_by_pair is None else [labels_by_pair[p] for p in pairs]
         n_motif = None if labels is None else int(sum(labels))
@@ -284,7 +285,9 @@ def evaluate(dataset, data_path, scores_dir, checkpoints_dir, nodes_file, output
         nearest = baseline_scores(pairs, node, 'nearest_first') if m else np.zeros(0)
         for g, (model, pred, prob) in models.items():
             target = int(pred[node])
-            base = dict(dataset=dataset, split=split, gnn_seed=g, node_id=node, target_class=target,
+            base = dict(dataset=dataset, split=split, gnn_seed=g,
+                        checkpoint_sha256=checkpoints[g]['sha256'], node_id=node,
+                        target_class=target, true_label=int(data['y'][node]),
                         pred_correct=bool(target == int(data['y'][node])), m=m,
                         n_motif_candidates=n_motif, node_degree=degree[node])
             full_prob = float(prob[node, target])
@@ -377,6 +380,8 @@ def evaluate(dataset, data_path, scores_dir, checkpoints_dir, nodes_file, output
                             'precision': gt['precision'], 'recall': gt['recall'],
                             'n_1hop_in_topk': int(sum(node in pairs[i] for i in selected)),
                             'gap_k_k1': _gap(sorted_scores, len(selected)),
+                            # Selected edges in rank order, so A3 can reuse the exact tie-break.
+                            'topk_edge_ids': ';'.join(str(eid_of[pairs[i]]) for i in selected),
                             'status': 'success'})
 
     agreements = _agreements(dataset, store, preds, nodes, budgets, baseline_seeds)

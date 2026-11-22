@@ -113,10 +113,12 @@ def test_saliency_seed_copy_gives_kappa_one(tmp_path):
 def test_metrics_equal_core_on_full_graph(grid):
     tmp_path, scores, nodes_file = grid
     run(tmp_path, scores, nodes_file, ensemble=False)
-    metrics = pd.read_csv(tmp_path / 'eval' / 'metrics.csv')
+    metrics = pd.read_csv(tmp_path / 'eval' / 'metrics.csv',
+                          dtype={'topk_edge_ids': str, 'checkpoint_sha256': str})
     data = torch.load(DATA, weights_only=False)
     model, pred, _, _ = load_checkpoint(CKPTS / DS / 'gcn_s1001.pt', data, sha256(DATA))
-    rows = metrics[(metrics.gnn_seed == 1001) & (metrics.variant == 'single')].sample(8, random_state=0)
+    single = metrics[(metrics.gnn_seed == 1001) & (metrics.variant == 'single')]
+    rows = pd.concat([single[single.budget == k].sample(4, random_state=0) for k in BUDGETS])
     for r in rows.itertuples():
         df = pd.read_csv(scores / 'gcn_s1001' / f'{r.method}_e{r.explainer_seed}.csv')
         part = df[df.node_id == r.node_id]
@@ -125,8 +127,12 @@ def test_metrics_equal_core_on_full_graph(grid):
         s = np.array([by_pair[p] for p in pairs])
         order = rank_edges(s, protocol_tie_seed(DS, 1001, r.node_id, r.method, 'single',
                                                 r.explainer_seed, r.tie_index))
-        ref = fidelity_selected(model, data, r.node_id, int(pred[r.node_id]), pairs,
-                                top_indices(order, r.budget))
+        chosen = top_indices(order, r.budget)
+        ref = fidelity_selected(model, data, r.node_id, int(pred[r.node_id]), pairs, chosen)
+        eid = dict(zip(zip(part.u, part.v), part.edge_id))
+        assert r.topk_edge_ids == ';'.join(str(eid[pairs[i]]) for i in chosen)
+        assert r.true_label == int(data['y'][r.node_id])
+        assert r.checkpoint_sha256 == sha256(CKPTS / DS / 'gcn_s1001.pt')
         assert abs(ref['fid_drop'] - r.fid_drop) < 1e-6
         assert abs(ref['fid_inv'] - r.fid_inv) < 1e-6
 
