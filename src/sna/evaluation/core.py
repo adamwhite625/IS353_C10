@@ -91,12 +91,10 @@ def agreement(scores_a, scores_b, k, seed=0, order_a=None, order_b=None):
             'kappa': kappa, 'kappa_reason': kappa_reason}
 
 
-def ground_truth_metrics(pairs, scores, edge_index, gt_edge_mask, selected):
-    out = {key: float('nan') for key in ('roc_auc', 'average_precision', 'precision', 'recall')}
+def pair_labels(edge_index, gt_edge_mask):
+    """Map each undirected pair (min, max) to its motif label; None without ground truth."""
     if gt_edge_mask is None:
-        return {**out, 'gt_reason': 'no_ground_truth', 'gt_positives': None,
-                'auc_reason': 'no_ground_truth', 'precision_reason': 'no_ground_truth',
-                'recall_reason': 'no_ground_truth'}
+        return None
     e = edge_index.detach().cpu().numpy()
     mask = torch.as_tensor(gt_edge_mask).detach().cpu().numpy().astype(bool)
     if mask.ndim != 1 or len(mask) != e.shape[1]:
@@ -107,7 +105,23 @@ def ground_truth_metrics(pairs, scores, edge_index, gt_edge_mask, selected):
         if p in labels_by_pair and labels_by_pair[p] != bool(mask[j]):
             raise ValueError('Ground truth disagrees between directions of an edge')
         labels_by_pair[p] = bool(mask[j])
-    labels = np.array([labels_by_pair[tuple(p)] for p in pairs], dtype=int)
+    return labels_by_pair
+
+
+def ground_truth_metrics(pairs, scores, edge_index, gt_edge_mask, selected):
+    labels_by_pair = pair_labels(edge_index, gt_edge_mask)
+    labels = None if labels_by_pair is None else [labels_by_pair[tuple(p)] for p in pairs]
+    return ground_truth_from_labels(labels, scores, selected)
+
+
+def ground_truth_from_labels(labels, scores, selected):
+    """Same as ground_truth_metrics with per-candidate labels precomputed (None = no GT)."""
+    out = {key: float('nan') for key in ('roc_auc', 'average_precision', 'precision', 'recall')}
+    if labels is None:
+        return {**out, 'gt_reason': 'no_ground_truth', 'gt_positives': None,
+                'auc_reason': 'no_ground_truth', 'precision_reason': 'no_ground_truth',
+                'recall_reason': 'no_ground_truth'}
+    labels = np.asarray(labels, dtype=int)
     a = validate_scores(scores, len(labels))
     pos = int(labels.sum())
     chosen = np.asarray(selected, dtype=int)
