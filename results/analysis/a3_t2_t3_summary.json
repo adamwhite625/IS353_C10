@@ -1,9 +1,0 @@
-{
-  "total_rows": 700,
-  "rows_with_motif_edges": 475,
-  "mean_fid_motif": 0.3050073173937159,
-  "mean_fid_1hop": 0.2558799985574434,
-  "mean_fid_motif_recomp_x": 0.3767212412854323,
-  "mean_t3_motif_delta": 0.0717139238917164,
-  "pct_fid_motif_lt_0_10": 0.45263157894736844
-}
