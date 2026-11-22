@@ -123,8 +123,16 @@ wandb/
 !sample_edge_scores.csv
 !notebooks/**/*.ipynb
 
+# Dữ liệu và checkpoint chính thức (~18 MB) được commit để clone về là chạy được.
+# Mọi file đều có SHA-256 trong manifest/JSON tương ứng. CSV điểm 5x5 vẫn để trên Drive.
+!/data/bashapes/data.pt
+!/data/bashapes/gcn_ckpt.pt
+!/data/cora/data.pt
+!/data/cora/gcn_ckpt.pt
+!/results/data/*/data.pt
+!/results/checkpoints/*/gcn_s*.pt
+
 # Final experiment inputs, raw edge scores and transient smoke runs.
-/results/data/
 /results/smoke/
 /results/scores/**/*.csv
 /results/test-assets/

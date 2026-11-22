@@ -1,0 +1,29 @@
+{
+  "git_commit": "113404551d6cab659884b24a4183fb6819e7afe5",
+  "git_dirty": false,
+  "utc": "2026-11-22T07:11:52.768582+00:00",
+  "argv": [
+    "scripts/reproduce_all.py",
+    "--data-root",
+    "/workspace/scratch/pn1-restored-run/data"
+  ],
+  "python": "3.12.14",
+  "versions": {
+    "torch": "2.15.0+cpu",
+    "torch-geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1"
+  },
+  "protocol_sha256": "6772f23d526fa4cf803b2a5fafb1603e69f9d9d88bb19ef3eab1427b0ee04c6e",
+  "device": "cpu",
+  "dataset": "bashapes",
+  "source": "archived_t06",
+  "data_sha256": "8fbf94a7ce5850dbdae4a0cd13b178aaa3db1b7009a12efcef8e47306b2c3c73",
+  "dataset_spec": {
+    "source": "archived_t06",
+    "data_sha256": "8fbf94a7ce5850dbdae4a0cd13b178aaa3db1b7009a12efcef8e47306b2c3c73",
+    "split_seed": 0,
+    "test_nodes": "all"
+  }
+}
