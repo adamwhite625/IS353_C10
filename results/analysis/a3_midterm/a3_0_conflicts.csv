@@ -1,0 +1,7 @@
+gnn_seed,explainer_seed,tie_seed,fid_winners,auc_winners,conflict
+0,42,average,nearest_first,pgexplainer,True
+0,42,0,nearest_first,pgexplainer,True
+0,42,1,nearest_first,pgexplainer,True
+0,42,2,nearest_first,pgexplainer,True
+0,42,3,nearest_first,pgexplainer,True
+0,42,4,nearest_first,pgexplainer,True

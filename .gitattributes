@@ -1,1 +1,9 @@
 results/checkpoints/checkpoint_table.csv -text whitespace=cr-at-eol
+
+# Preserve bytes referenced by the BA-Shapes H2 and T2/T3 manifests.
+/data/bashapes/test_nodes.json text eol=lf
+/results/analysis/a3_t2_t3/t2_t3_by_node.csv text eol=lf
+/results/analysis/a3_midterm/*.csv text eol=lf
+/results/analysis/a3_pgexplainer_preliminary/*.csv text eol=lf
+/results/analysis/a3_pgexplainer_fidelity/*.csv text eol=lf
+/results/analysis/a3_partial_test/*.csv text eol=lf

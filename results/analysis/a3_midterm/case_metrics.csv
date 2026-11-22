@@ -1,0 +1,5 @@
+gnn_seed,node_id,checkpoint_sha256,method,true_label,target_class,fid_drop,fid_inv,roc_auc,precision_at_5,one_hop_fraction,tied_fraction,gap_5_6,fid_winners,auc_winners,conflict
+0,692,e751d9e112e5def02e0e80401afb132553ad9071036b4da34d6673e8bebe7b9c,gnnexplainer,2,2,-0.09660828113555908,-0.0958593487739563,NaN,1.0,0.4,0.0,0.025867999999999947,gnnexplainer|nearest_first|pgexplainer|saliency,,NaN
+0,692,e751d9e112e5def02e0e80401afb132553ad9071036b4da34d6673e8bebe7b9c,nearest_first,2,2,-0.09660828113555908,0.6150207817554474,NaN,1.0,0.4,0.8333333333333334,1.0,gnnexplainer|nearest_first|pgexplainer|saliency,,NaN
+0,692,e751d9e112e5def02e0e80401afb132553ad9071036b4da34d6673e8bebe7b9c,pgexplainer,2,2,-0.09660828113555908,0.05088299512863159,NaN,1.0,0.2,0.8333333333333334,1.0000000000287557e-06,gnnexplainer|nearest_first|pgexplainer|saliency,,NaN
+0,692,e751d9e112e5def02e0e80401afb132553ad9071036b4da34d6673e8bebe7b9c,saliency,2,2,-0.09660828113555908,0.05088299512863159,NaN,1.0,0.2,0.0,0.404165,gnnexplainer|nearest_first|pgexplainer|saliency,,NaN

@@ -15,3 +15,11 @@ Chạy lại Saliency và GNNExplainer với seed 42 trên 20 node validation g�
 | Cora | 6,64 × 10⁻⁷ | 8,23 × 10⁻⁷ |
 
 Checkpoint gốc dùng để đối chiếu giữa kỳ. Giao thức cuối kỳ dùng lại dữ liệu đã xác minh, với các checkpoint đa seed huấn luyện mới. Xem [bằng chứng kiểm tra](../results/gate0/verification.json).
+
+## Đối chiếu T06 trên máy Kha
+
+Chạy lại bộ đánh giá giữa kỳ trên CPU với hai bộ dữ liệu gốc và CSV điểm T05.
+Kết quả có 2.080 dòng metric, 6.080 dòng agreement và 0 lỗi. Trung bình và
+độ lệch chuẩn của 240 dòng tổng hợp metric và 160 dòng tổng hợp agreement
+khớp bốn chữ số thập phân. Số node hợp lệ và tổng số node khớp từng dòng.
+[Bằng chứng đối chiếu](../results/gate0/kha_t06_comparison.json)
