@@ -35,7 +35,7 @@ class ExplainerResult:
     edge_ids: List[int]
     scores: List[float]
     runtime_sec: float
-    status: str                         # 'success' | 'failed' | 'skipped'
+    status: str                         # 'success' | 'failed' | 'empty_candidates' | 'skipped'
     error_message: str = ""
     metadata: Dict[str, Any] = field(default_factory=dict)
 
