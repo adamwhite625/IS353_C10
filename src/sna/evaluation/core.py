@@ -48,6 +48,34 @@ def top_indices(order, k):
     return np.asarray(order, dtype=int)[:min(int(k), len(order))]
 
 
+def kappa_at_k(selected_a, selected_b, k, m):
+    """κ@k hiệu chỉnh theo mức trùng ngẫu nhiên (Phụ lục A của kế hoạch chốt).
+
+    κ@k = (|A∩B| − k²/m) / (k − k²/m), với k = k_eff = min(k, m) và m là số cạnh ứng viên.
+    Bằng 1 khi hai tập trùng hoàn toàn, 0 ở mức ngẫu nhiên, âm khi kém ngẫu nhiên.
+    Trả về dict {'kappa', 'kappa_reason'}; giá trị không xác định là NaN kèm lý do:
+    'no_candidates' (m = 0), 'zero_budget' (k_eff = 0), 'selection_equals_all_candidates'
+    (k_eff = m, hai tập luôn trùng nên không có thông tin).
+    selected_a/selected_b là chỉ số cạnh đã chọn; chỉ lấy k_eff phần tử đầu mỗi bên.
+    """
+    if int(k) != k or k < 0 or int(m) != m or m < 0:
+        raise ValueError('k và m phải là số nguyên không âm')
+    k_eff = min(int(k), int(m))
+    nan = float('nan')
+    if m == 0:
+        return {'kappa': nan, 'kappa_reason': 'no_candidates'}
+    if k_eff == 0:
+        return {'kappa': nan, 'kappa_reason': 'zero_budget'}
+    if k_eff == m:
+        return {'kappa': nan, 'kappa_reason': 'selection_equals_all_candidates'}
+    a = set(np.asarray(selected_a, dtype=int)[:k_eff].tolist())
+    b = set(np.asarray(selected_b, dtype=int)[:k_eff].tolist())
+    if len(a) != k_eff or len(b) != k_eff or any(not 0 <= i < m for i in a | b):
+        raise ValueError('Tập chọn phải gồm đúng k_eff chỉ số khác nhau trong [0, m)')
+    expected = k_eff * k_eff / m
+    return {'kappa': float((len(a & b) - expected) / (k_eff - expected)), 'kappa_reason': ''}
+
+
 def agreement(scores_a, scores_b, k, seed=0, order_a=None, order_b=None):
     a = validate_scores(scores_a)
     b = validate_scores(scores_b, len(a))
@@ -61,7 +89,8 @@ def agreement(scores_a, scores_b, k, seed=0, order_a=None, order_b=None):
         tau = float(kendalltau(a, b, variant='b').statistic)
         reason = '' if np.isfinite(tau) else 'undefined_rank_correlation'
     return {'jaccard': jac, 'kendall_tau_b': tau, 'tau_reason': reason,
-            'jaccard_reason': '' if sa | sb else 'empty_selected_union'}
+            'jaccard_reason': '' if sa | sb else 'empty_selected_union',
+            **kappa_at_k(top_indices(oa, k), top_indices(ob, k), k, len(a))}
 
 
 def ground_truth_metrics(pairs, scores, edge_index, gt_edge_mask, selected):
@@ -74,13 +103,24 @@ def ground_truth_metrics(pairs, scores, edge_index, gt_edge_mask, selected):
     mask = torch.as_tensor(gt_edge_mask).detach().cpu().numpy().astype(bool)
     if mask.ndim != 1 or len(mask) != e.shape[1]:
         raise ValueError('gt_edge_mask must align with columns of edge_index')
-    labels_by_pair = {}
-    for j, (u, v) in enumerate(e.T):
-        p = (min(int(u), int(v)), max(int(u), int(v)))
-        if p in labels_by_pair and labels_by_pair[p] != bool(mask[j]):
-            raise ValueError('Ground truth disagrees between directions of an edge')
-        labels_by_pair[p] = bool(mask[j])
-    labels = np.array([labels_by_pair[tuple(p)] for p in pairs], dtype=int)
+    # Vector hóa (kết quả giống hệt vòng lặp từng cạnh; chạy nhanh hơn trên đồ thị lớn).
+    pair_arr = np.asarray(pairs, dtype=np.int64).reshape(-1, 2)
+    base = max(int(e.max()) if e.size else 0, int(pair_arr.max()) if pair_arr.size else 0) + 2
+    edge_keys = np.minimum(e[0], e[1]).astype(np.int64) * base + np.maximum(e[0], e[1])
+    unique_keys, inverse = np.unique(edge_keys, return_inverse=True)
+    positive = np.bincount(inverse, weights=mask.astype(float), minlength=len(unique_keys))
+    total = np.bincount(inverse, minlength=len(unique_keys))
+    if ((positive != 0) & (positive != total)).any():
+        raise ValueError('Ground truth disagrees between directions of an edge')
+    pair_arr = np.asarray(pairs, dtype=np.int64).reshape(-1, 2)
+    pair_keys = np.minimum(pair_arr[:, 0], pair_arr[:, 1]) * base + np.maximum(pair_arr[:, 0], pair_arr[:, 1])
+    where = np.searchsorted(unique_keys, pair_keys)
+    where_clipped = np.minimum(where, max(len(unique_keys) - 1, 0))
+    missing = (len(unique_keys) == 0) | (where >= len(unique_keys)) | (unique_keys[where_clipped] != pair_keys) \
+        if len(pair_keys) else np.zeros(0, dtype=bool)
+    if np.any(missing):
+        raise KeyError(tuple(pair_arr[int(np.argmax(missing))]))
+    labels = (positive[where_clipped] > 0).astype(int) if len(pair_keys) else np.zeros(0, dtype=int)
     a = validate_scores(scores, len(labels))
     pos = int(labels.sum())
     chosen = np.asarray(selected, dtype=int)
@@ -106,9 +146,12 @@ def fidelity_selected(model, data, node_id, target_class, pairs, selected, orig_
     device = next(model.parameters()).device
     x, edges = data['x'].to(device), data['edge_index'].to(device)
     chosen = {tuple(pairs[i]) for i in selected}
-    endpoints = edges.detach().cpu().t().tolist()
-    selected_mask = torch.tensor([(min(u, v), max(u, v)) in chosen for u, v in endpoints],
-                                 device=device, dtype=torch.bool)
+    endpoints = edges.detach().cpu().numpy()
+    top = max([int(endpoints.max()) if endpoints.size else 0] + [max(p) for p in chosen] + [0])
+    base = top + 2
+    edge_keys = np.minimum(endpoints[0], endpoints[1]).astype(np.int64) * base + np.maximum(endpoints[0], endpoints[1])
+    chosen_keys = np.array([u * base + v for u, v in chosen if u <= v], dtype=np.int64)
+    selected_mask = torch.from_numpy(np.isin(edge_keys, chosen_keys)).to(device=device, dtype=torch.bool)
     loops = edges[0] == edges[1]
     def probability(e):
         with torch.no_grad():

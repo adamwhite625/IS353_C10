@@ -1,0 +1,51 @@
+{
+  "git_commit": "b786475a1c768c917a55652295ffb2ea040d2ad4",
+  "git_dirty": false,
+  "utc": "2026-11-23T04:43:25.375825+00:00",
+  "argv": [
+    "scripts/analyze_variance.py",
+    "--eval-root",
+    "../final_eval",
+    "--out",
+    "../final_a2",
+    "--figures",
+    "../final_a2/figs"
+  ],
+  "python": "3.12.14",
+  "versions": {
+    "torch": "2.15.0+cpu",
+    "torch-geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1"
+  },
+  "protocol_sha256": "88c3c808506d96fb8ce869f12a3c56cdd7ccc9f8f451e6472b830dc76cef3939",
+  "device": "cpu",
+  "budget": 5,
+  "metric": "kappa",
+  "bootstrap": {
+    "unit": "node",
+    "repeats": 2000,
+    "confidence": 0.95,
+    "seed": 0
+  },
+  "paired_test": "wilcoxon_signed_rank (zero_method=wilcox)",
+  "adjustment": "holm (theo dataset)",
+  "inputs": {
+    "bashapes/agreement.csv": "22ad9c568cb11dcb0385b31afaa6dd77eea57dfa12af1f6170a293450c32baea",
+    "bashapes/pred_change.csv": "e66c4bddb6f1908870f3ad28e6fba9421f3f94032435a4d64b6c6fe6d9f375f8",
+    "bashapes/metrics.csv": "c2e0fc4b3b3c767be1a41e066e381e38cd85eb5f5dc6e909ea587fbf59dbe2b4",
+    "bashapes/manifest.json": "2f0e88ad0d20d0dbd72bed7128bafd4f65e4a2d56c56ee1cd14c2ca15e2778cc",
+    "cora/agreement.csv": "e8f812f5a89db27c751d4532b26909259a99d6176780d549f659064d4af3184e",
+    "cora/pred_change.csv": "dbc58396b7c09dd4d89e27c18bf2fc549a3e3c4b32c913b605126cafc8e68656",
+    "cora/metrics.csv": "9cbb0243d4a9fae575d9437d3b3c9068dcaea357b4511bc2ff2020400367438f",
+    "cora/manifest.json": "ce617ab8885f3a8138272981c875677ff78d6ad0ffe94780cbbb82e5e4af2ad6"
+  },
+  "outputs": {
+    "a2_1_within_cross_gnn.csv": "ef4cf04a839fcb07da049802d863bc77e325b884f52f87e457556556dfe57c6e",
+    "a2_2_between.csv": "1836da2bcdb2dcae2097a7d596f20f5ac26474fbc3f576d63c3dffc0ffb0561a",
+    "a2_3_fid_sd_vs_method_diff.csv": "1d9d5484a145d66f1c41a019338f55b7c1346bf7424597dc00399f9b205d0831",
+    "figures/a2_bashapes.png": "eb0341fd2587afee857a08b8ca73822be9913b2ec5bef07483bb0c715664a9b7",
+    "figures/a2_cora.png": "fe435673d9d3d2b58002db81d50e7f9ee9ee9478a7280d7af05aa10acbea5f49"
+  }
+}

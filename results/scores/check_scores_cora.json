@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "scores_path": "results\\scores\\cora",
+  "n_files": 56,
+  "n_rows": 391160,
+  "n_run_logs": 5,
+  "datasets": [
+    "cora"
+  ],
+  "verified_hashes": {
+    "cora/gcn_s1000": {
+      "csv_sha256": "9752ccdc224c08f7fc4c0632e4760e62b9d43dec6747fee42634950b48a19aa2",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1000.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1000.json"
+    },
+    "cora/gcn_s1001": {
+      "csv_sha256": "a0486f9dcb75eec8dee18f03dcbe5dafcb76dbba02988a5baeb574461e0c86f6",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1001.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1001.json"
+    },
+    "cora/gcn_s1002": {
+      "csv_sha256": "5508187655e01269ddbc6afa49f03e43150742df7f09e85bccbcf815e3464949",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1002.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1002.json"
+    },
+    "cora/gcn_s1003": {
+      "csv_sha256": "9e9de09b214e77d95dc87bc6883f4f087b0be5452a4fcfc0bc14b56c66216f92",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1003.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1003.json"
+    },
+    "cora/gcn_s1004": {
+      "csv_sha256": "d35159b1ef5929281da6fcd0c8dca00b46cd4e8bf0ec9a7e5cf9d945c9bda6a1",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1004.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\cora\\gcn_s1004.json"
+    }
+  },
+  "graph_verified_datasets": [
+    "cora"
+  ],
+  "saliency_determinism": {
+    "cora/gcn_s1000": {
+      "seeds": [
+        0,
+        1
+      ],
+      "max_diff": 0.0
+    }
+  },
+  "n_errors": 0,
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,39 @@
+{
+  "git_commit": "52adedafecaf71d2d836c21085ac51540480da6e",
+  "git_dirty": false,
+  "utc": "2026-11-23T04:58:55.329015+00:00",
+  "argv": [
+    "scripts/summarize_main_results.py",
+    "--eval-root",
+    "../final_eval",
+    "--out",
+    "../final_main"
+  ],
+  "python": "3.12.14",
+  "versions": {
+    "torch": "2.15.0+cpu",
+    "torch-geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1"
+  },
+  "protocol_sha256": "88c3c808506d96fb8ce869f12a3c56cdd7ccc9f8f451e6472b830dc76cef3939",
+  "device": "cpu",
+  "inputs": {
+    "bashapes/metrics.csv": "c2e0fc4b3b3c767be1a41e066e381e38cd85eb5f5dc6e909ea587fbf59dbe2b4",
+    "cora/metrics.csv": "9cbb0243d4a9fae575d9437d3b3c9068dcaea357b4511bc2ff2020400367438f",
+    "midterm_summary.csv": "64cc28669667ce3d502a732a921e2596ed8ac4c0b0ca3330e8aa9ea223d021df"
+  },
+  "outputs": {
+    "main_by_method_budget.csv": "60d2f2eac174924e7ed7e3a327c5baf124aa482a22ca08b7c0e67e150d0dc77b",
+    "main_sd_over_gnn_seeds.csv": "40b68e661c84723667656eb1840ca52076106fca6497605ee63bd80fdb1cfee0",
+    "midterm_reference.csv": "e1e15b38b50b16277578d3c935d2a57058c3bedaaf4a743fe03bb3217845c472"
+  },
+  "bootstrap": {
+    "unit": "node",
+    "repeats": 2000,
+    "confidence": 0.95,
+    "seed": 0
+  },
+  "aggregation": "trung bình theo node: qua e/repeat trong từng g rồi qua g (mỗi GNN một trọng số); CI bootstrap trên node"
+}

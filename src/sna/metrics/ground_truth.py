@@ -4,8 +4,10 @@ from typing import List, Tuple, Dict
 import numpy as np
 import torch
 from sklearn.metrics import roc_auc_score, precision_recall_curve, auc
+from ._deprecated import deprecated_metric
 
 
+@deprecated_metric('sna.evaluation.core.ground_truth_metrics')
 def compute_ground_truth_auc(
     candidate_pairs: List[Tuple[int, int]],
     edge_scores: List[float],
