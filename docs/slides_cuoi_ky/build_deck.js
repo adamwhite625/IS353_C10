@@ -88,11 +88,13 @@ const M5 = ["saliency", "gnnexplainer", "pgexplainer", "nearest_first", "random"
   s.addText("ĐỀ TÀI C.10  |  BÁO CÁO CUỐI KỲ", { x: 0.7, y: 0.6, w: 8.6, h: 0.35, fontSize: 14, bold: true, color: "7FD1D9", charSpacing: 3, margin: 0, isTextBox: true });
   s.addText("Making Graph ML Models Explainable", { x: 0.7, y: 1.2, w: 8.6, h: 0.9, fontFace: "Cambria", fontSize: 38, bold: true, color: WHITE, margin: 0, isTextBox: true });
   s.addText("Bất ổn định, bất đồng và mâu thuẫn metric trong giải thích GNN", { x: 0.7, y: 2.2, w: 8.6, h: 0.6, fontFace: "Cambria", fontSize: 22, color: "CADCFC", margin: 0, isTextBox: true });
+  s.addText("Nhóm 09 — GVHD: TS. Trần Hưng Nghiệp", { x: 0.7, y: 3.15, w: 7.3, h: 0.35, fontSize: 16, bold: true, color: WHITE, margin: 0, isTextBox: true });
   s.addText([
-    { text: "Nhóm 09  ·  Phân tích mạng xã hội (SNA)  ·  UIT", options: { breakLine: true } },
-    { text: "GVHD: TS. Trần Hưng Nghiệp", options: { breakLine: true } },
-    { text: "Tháng 11/2026" },
-  ], { x: 0.7, y: 3.7, w: 8.6, h: 1.1, fontSize: 16, color: WHITE, margin: 0, paraSpaceAfter: 4, isTextBox: true });
+    { text: "Nguyễn Trường Vũ (23521812)  ·  Nguyễn Lê Bảo Đăng (23520230)", options: { breakLine: true } },
+    { text: "Nguyễn Hải Thiện (23521481)  ·  Nguyễn Trọng Khôi (23520783)", options: { breakLine: true } },
+    { text: "Vòng Việt Đức (23520324)  ·  Nguyễn Hoàng Kha (23520667)", options: { breakLine: true } },
+    { text: "Phân tích mạng xã hội (SNA)  ·  UIT  ·  Tháng 11/2026" },
+  ], { x: 0.7, y: 3.55, w: 7.3, h: 1.5, fontSize: 14, color: "CADCFC", margin: 0, paraSpaceAfter: 3, valign: "top", isTextBox: true });
   // motif: three small linked nodes at right
   const nodes = [[8.2, 3.9], [8.9, 4.4], [8.0, 4.75], [9.2, 3.6]];
   const edges = [[0, 1], [0, 2], [1, 2], [0, 3]];

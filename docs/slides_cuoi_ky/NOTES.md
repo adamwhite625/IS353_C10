@@ -26,6 +26,6 @@ Tái tạo: `python docs/slides_cuoi_ky/verify_numbers.py` (tính lại mọi s�
 ## Chỗ cần lưu ý
 - Slide 11: "2v3" là hai bản gộp có kích cỡ khác nhau (2 seed và 3 seed), vì chỉ có 5 seed; là bằng chứng gián tiếp. Ablation S = 5 chưa chạy.
 - Slide 4: các số 0,885 (F1) và 0,95 (F10) lấy từ báo cáo/biên bản, không có CSV trong `results/analysis/`.
-- Slide 12 và ghi chú: size-loss `sum` của GNNExplainer (F10) vẫn chờ nhóm trưởng xác nhận (xem báo cáo Mục 9.1, ý 9).
-- Tên thành viên và MSSV không có trong tài liệu nguồn nên bìa chỉ ghi "Nhóm 09"; cần bổ sung nếu giảng viên yêu cầu.
+- Slide 12 và ghi chú: size-loss `sum` của GNNExplainer (F10) đã được nhóm trưởng chốt (đã chốt; báo cáo Mục 9.1, ý 9 cần đồng bộ).
+- Bìa ghi 6 thành viên và MSSV theo README.md.
 - `validate.py` của skill không chạy được trên máy này (thiếu file schema); file đã được mở và xuất ảnh thành công bằng PowerPoint và đọc bằng python-pptx.
