@@ -385,11 +385,10 @@ SNA_DATA_ROOT="$PWD/results/test-assets" OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 pyt
 
 Trên clone sạch, chạy smoke với cả hai tham số `--bashapes-data` và `--cora-data`
 như ở bước chuẩn bị dữ liệu. Smoke tạo kết quả riêng dưới `results/smoke/`.
-Lệnh đầy đủ `python scripts/reproduce_all.py` cần các entry point
-`run_explainers.py`, `check_scores.py`, `evaluate.py`, `analyze_variance.py` và
-`error_analysis.py` theo hợp đồng bàn giao PN2/PN3. `run_explainers.py` và
-`check_scores.py` nhận `--data-dir`; giao diện dự kiến của `evaluate.py` nhận `--data-root`.
-Cả ba bước phải trỏ đến dữ liệu cuối kỳ. Các seed, đường dẫn
+Lệnh đầy đủ `python scripts/reproduce_all.py` (không có `--smoke`) chạy toàn chuỗi cuối kỳ: train 10 checkpoint,
+lưới ba phương pháp (GNNExplainer với `--gnn-size-loss-mode sum`), `check_scores`, bộ đánh giá v2, FB-2, FB-3, kết quả chính và D1.
+Chuỗi này mất vài giờ trên CPU và train lại checkpoint không cho cùng SHA-256 với bản đã nộp (mốc tái lập là hash file `.pt` trong
+`results/checkpoints/`); để tái tạo đúng số của báo cáo, hãy dùng checkpoint trên Git và chạy từng bước theo mục "Kết quả cuối kỳ và cách chạy lại" ở trên. Các seed, đường dẫn
 checkpoint, danh sách test và cột CSV theo [giao thức](configs/protocol_final.yaml).
 
 Các notebook và bảng giữa kỳ là tư liệu lịch sử. Xem [biên bản GATE 0](docs/GATE0_TAI_LAP_GIUA_KY.md)
