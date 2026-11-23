@@ -104,31 +104,44 @@ def run_script(name, *args):
 
 
 def run_full(data_root, spec):
-    required = ['run_explainers', 'check_scores', 'evaluate', 'analyze_variance', 'error_analysis']
+    """Chuỗi đầy đủ cuối kỳ, đúng các lệnh đã dùng cho kết quả báo cáo (README, mục "Kết quả cuối kỳ").
+
+    Ghi điểm vào ``results/scores`` (CSV bị Git bỏ qua), đánh giá vào ``results/eval``, phân tích vào
+    ``results/analysis``. Chạy trên CPU; nên đặt OMP_NUM_THREADS=2 để PGExplainer tái lập đúng điểm.
+    """
+    required = ['run_explainers', 'check_scores', 'evaluate', 'analyze_variance', 'error_analysis',
+                'summarize_main_results', 'analyze_ensemble']
     missing = [f'scripts/{name}.py' for name in required
                if not (PROJECT_ROOT / f'scripts/{name}.py').is_file()]
     if missing:
-        raise SystemExit('Final PN2/PN3 entry points missing: ' + ', '.join(missing))
-    selections = {}
+        raise SystemExit('Missing entry points: ' + ', '.join(missing))
+    seeds = {}
     for dataset in spec['dataset_order']:
         run_script('make_node_lists', '--datasets', dataset, '--data-root', data_root)
-        selections[dataset] = train_dataset(dataset, data_root, Path('results/checkpoints'),
-                                            spec['gnn_seeds'])
+        seeds[dataset] = train_dataset(dataset, data_root, Path('results/checkpoints'), spec['gnn_seeds'])
+    scores_root = Path('results/scores')
+    eval_root = Path('results/eval')
     for dataset in spec['dataset_order']:
-        # Selection preserves declared order including any replacement of the reference seed.
-        scores = Path('results/scores') / dataset
-        evaluation = Path('results/eval') / f'{dataset}_test'
-        run_script('run_explainers', '--dataset', dataset, '--split', 'test',
-                   '--data-dir', data_root, '--nodes-file', Path('data') / dataset / 'test_nodes.json',
-                   '--gnn-seeds', *selections[dataset], '--protocol-saliency',
-                   '--explainer-seeds', *spec['explainer_seeds'], '--methods', *spec['methods'])
-        run_script('check_scores', scores, '--data-dir', data_root,
-                   '--expected-nodes-file', Path('data') / dataset / 'test_nodes.json')
-        run_script('evaluate', '--dataset', dataset, '--data-root', data_root,
-                   '--scores', scores, '--out', evaluation)
-        run_script('analyze_variance', '--eval', evaluation)
-    run_script('analyze_degree_mechanisms', '--data', data_root / 'bashapes/data.pt')
-    run_script('error_analysis', '--dataset', 'bashapes', '--eval', 'results/eval/bashapes_test')
+        # Một lượt cho mỗi seed GNN để run_log.json của từng checkpoint chứa đủ ba phương pháp.
+        for g in seeds[dataset]:
+            run_script('run_explainers', '--dataset', dataset, '--split', 'test',
+                       '--nodes-file', Path('data') / dataset / 'test_nodes.json',
+                       '--gnn-seeds', g, '--explainer-seeds', *spec['explainer_seeds'],
+                       '--methods', *spec['methods'], '--protocol-saliency',
+                       '--primary-gnn-seed', spec['fixed_gnn_seed'],
+                       '--gnn-size-loss-mode', 'sum', '--device', 'cpu', '--resume')
+        run_script('check_scores', scores_root / dataset)
+        out = eval_root / f'{dataset}_test'
+        for g in seeds[dataset]:
+            run_script('evaluate', '--dataset', dataset, '--scores-root', scores_root,
+                       '--out', out, '--gnn-seeds', g, '--parts-only')
+        run_script('evaluate', '--dataset', dataset, '--scores-root', scores_root, '--out', out,
+                   '--gnn-seeds', *seeds[dataset], '--aggregate')
+    run_script('analyze_variance', '--eval-root', eval_root, '--out', 'results/analysis/a2')
+    run_script('summarize_main_results', '--eval-root', eval_root, '--out', 'results/analysis/main')
+    run_script('analyze_ensemble', '--scores-root', scores_root, '--eval-root', eval_root)
+    run_script('error_analysis', '--scores', scores_root / 'bashapes',
+               '--t2-t3', 'results/analysis/a3_t2_t3/t2_t3_by_node.csv', '--out', 'results/analysis/a3_final')
 
 
 def main():
