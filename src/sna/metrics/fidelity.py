@@ -6,8 +6,10 @@ from typing import List, Tuple, Dict
 import numpy as np
 import torch
 import torch.nn.functional as F
+from ._deprecated import deprecated_metric
 
 
+@deprecated_metric('sna.evaluation.core.fidelity_selected')
 def compute_fidelity(
     model: torch.nn.Module,
     data: Dict,

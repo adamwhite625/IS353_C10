@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "scores_path": "results\\scores\\bashapes",
+  "n_files": 56,
+  "n_rows": 1337280,
+  "n_run_logs": 5,
+  "datasets": [
+    "bashapes"
+  ],
+  "verified_hashes": {
+    "bashapes/gcn_s1000": {
+      "csv_sha256": "26465138c327f1a2e17ba5b0337d69bdb1121f912d8a933d29d6b9daff1cea52",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1000.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1000.json"
+    },
+    "bashapes/gcn_s1001": {
+      "csv_sha256": "edec3f1e469b3b5ddc80d8455674c0d093d57cfcd26749fc4ae6f04df6282b8c",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1001.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1001.json"
+    },
+    "bashapes/gcn_s1002": {
+      "csv_sha256": "d7597424ea8e782e97d52a5dc1180117ef6aadb98baf61b05d7f18f3b01a0669",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1002.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1002.json"
+    },
+    "bashapes/gcn_s1003": {
+      "csv_sha256": "a41d45387f813f9d1fd28c8e024b3b04f358d9a63074a44ab611f03ca963e0a3",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1003.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1003.json"
+    },
+    "bashapes/gcn_s1004": {
+      "csv_sha256": "100c14dcd56ef8a397cca9b07b99ec5877970a0b7a9b6cb161bdddfb70f4ab84",
+      "verified": true,
+      "source": "D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1004.pt & D:\\WorkSpace\\UIT\\SocialNetwork\\DoAn\\repo\\results\\checkpoints\\bashapes\\gcn_s1004.json"
+    }
+  },
+  "graph_verified_datasets": [
+    "bashapes"
+  ],
+  "saliency_determinism": {
+    "bashapes/gcn_s1000": {
+      "seeds": [
+        0,
+        1
+      ],
+      "max_diff": 0.0
+    }
+  },
+  "n_errors": 0,
+  "errors": [],
+  "warnings": []
+}

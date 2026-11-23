@@ -315,7 +315,41 @@ pytest tests/
 
 ```
 
-**Kết quả:** Kiểm thử thành công 100% (2/2 test passed): nạp dữ liệu, checkpoint GCN, 5 thuật toán Explainer/Baselines, trích xuất cạnh ứng viên 2-hop, và tính toán độ đo Fidelity/Jaccard trên cả thiết bị CPU và GPU CUDA.
+**Kết quả:** toàn bộ test trong `tests/` pass: nạp dữ liệu, checkpoint GCN, 5 thuật toán Explainer/Baselines, trích xuất cạnh ứng viên 2-hop, và tính toán độ đo Fidelity/Jaccard trên cả thiết bị CPU và GPU CUDA.
+
+## Kết quả cuối kỳ và cách chạy lại (PN2, PN3)
+
+Dữ liệu (`results/data`, `data/*/data.pt`) và 10 checkpoint (`results/checkpoints`) đã có trên Git, nên clone về là chạy được.
+Mọi bước dưới đây chạy trên **CPU, 2 luồng** như `configs/protocol_final.yaml`. Hãy đặt `OMP_NUM_THREADS=2 MKL_NUM_THREADS=2`:
+PGExplainer rất nhạy với nhiễu số học, đổi số luồng sẽ đổi điểm (xem `results/analysis/a2/pg_thread_sensitivity.csv`).
+Cùng số luồng thì điểm trùng tuyệt đối.
+
+```bash
+export PYTHONPATH=src OMP_NUM_THREADS=2 MKL_NUM_THREADS=2
+# 1. Lưới 5 GNN x 5 seed explainer (một lệnh cho mỗi dataset và mỗi seed GNN; có thể chạy song song)
+python scripts/run_explainers.py --dataset bashapes --split test --gnn-seeds 1000   --explainer-seeds 0 1 2 3 4 --methods saliency gnnexplainer pgexplainer   --protocol-saliency --primary-gnn-seed 1000 --gnn-size-loss-mode sum --device cpu --out-dir <thư mục ngoài repo>
+# (lặp lại với --gnn-seeds 1001..1004 và --dataset cora)
+python scripts/check_scores.py <thư mục>/bashapes            # phải in PASS
+# 2. Bộ đánh giá v2 (chia theo seed GNN rồi gộp)
+python scripts/evaluate.py --dataset bashapes --scores-root <thư mục> --out <eval>/bashapes_test --gnn-seeds 1000 --parts-only
+python scripts/evaluate.py --dataset bashapes --scores-root <thư mục> --out <eval>/bashapes_test --gnn-seeds 1000 1001 1002 1003 1004 --aggregate
+# 3. Phân tích
+python scripts/analyze_variance.py --eval-root <eval> --out results/analysis/a2          # FB-2
+python scripts/error_analysis.py --scores <thư mục>/bashapes --t2-t3 results/analysis/a3_t2_t3/t2_t3_by_node.csv --out results/analysis/a3_final  # FB-3
+python scripts/summarize_main_results.py --eval-root <eval> --out results/analysis/main  # Mục 5
+```
+
+Các CSV điểm thô và bảng lớn (khoảng 500 MB, nén 80 MB) không nằm trên Git; nén trong
+`PN2_final_results_20261123.zip` trên Drive nhóm, kèm `SHA256SUMS.txt`. `run_log.json` trong
+`results/scores/` ghi SHA-256 của từng CSV nên kiểm tra được sau khi tải về.
+
+| Phần báo cáo | Bảng / hình | File nguồn |
+|---|---|---|
+| Mục 5, kết quả chính | Fidelity, AUROC, AP, precision (CI 95%) | `results/analysis/main/` |
+| Mục 6, FB-2 | Bảng A2-1, A2-2, A2-3, Hình A2 | `results/analysis/a2/`, `docs/figures/final/a2_*.png`, `docs/BANG_SO_LIEU_FB2_INSTABILITY.md` |
+| Mục 7, FB-3 | Bảng A3-0 đến A3-2, case study | `results/analysis/a3_final/`, `docs/figures/final/a3_node_*.png`, `docs/PHAN_TICH_LOI_ERROR_ANALYSIS.md` |
+| Mục 8, D1 | Seed-Ensemble | `results/analysis/d1/`, `docs/BANG_SO_LIEU_D1_SEED_ENSEMBLE.md` |
+| Báo cáo | Bản đầy đủ | `docs/BAO_CAO_CUOI_KY.md` |
 
 ## Quy trình cuối kỳ của PN1
 

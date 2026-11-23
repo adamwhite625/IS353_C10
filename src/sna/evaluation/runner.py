@@ -37,7 +37,11 @@ def seed_for(dataset, node, method, repeat):
 
 
 def read_scores(path):
-    df = pd.read_csv(path)
+    return validate_score_frame(pd.read_csv(path))
+
+
+def validate_score_frame(df):
+    """Kiểm tra và chuẩn hóa bảng điểm đã nạp (tách khỏi đọc file để dùng lại)."""
     missing = set(REQUIRED) - set(df)
     if missing:
         raise ValueError(f'CSV missing columns: {sorted(missing)}')
@@ -262,7 +266,7 @@ def run(args):
     metric_summary = summary(metrics, ['dataset', 'method', 'budget'],
                              ['fid_drop', 'fid_inv', 'roc_auc', 'average_precision', 'precision', 'recall'])
     agreement_summary = summary(agreements, ['dataset', 'method_a', 'method_b', 'budget'],
-                                ['jaccard', 'kendall_tau_b'])
+                                ['jaccard', 'kendall_tau_b', 'kappa'])
     if not metric_summary.empty:
         metric_summary['n_total_nodes'] = args.nodes_per_dataset
     if not agreement_summary.empty:
