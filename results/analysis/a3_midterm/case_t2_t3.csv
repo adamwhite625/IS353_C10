@@ -1,0 +1,3 @@
+node_id,intervention,target_class,removed_pairs,fid_drop_fixed,fid_drop_refreshed,delta_refreshed_minus_fixed
+692,motif_2hop,2,6,-0.09660828113555908,-0.09660840034484863,-1.1920928955078125e-07
+692,one_hop,2,2,-0.09660828113555908,-0.09660840034484863,-1.1920928955078125e-07

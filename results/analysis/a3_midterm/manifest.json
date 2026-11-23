@@ -1,0 +1,90 @@
+{
+  "git_commit": "a48c724aa2c2ad42627ae81d9f1d0c320c42a487",
+  "git_dirty": true,
+  "utc": "2026-11-22T09:50:54.637769+00:00",
+  "argv": [
+    "scripts/error_analysis.py",
+    "--midterm",
+    "results/test-assets/kha/data/bashapes",
+    "--out",
+    "results/analysis/a3_midterm"
+  ],
+  "python": "3.13.3",
+  "versions": {
+    "torch": "2.15.0+cpu",
+    "torch-geometric": "2.8.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1"
+  },
+  "protocol_sha256": "88c3c808506d96fb8ce869f12a3c56cdd7ccc9f8f451e6472b830dc76cef3939",
+  "device": "cpu",
+  "mode": "midterm_val",
+  "nodes": [
+    692,
+    697,
+    443,
+    650,
+    263,
+    374,
+    74,
+    259,
+    559,
+    337,
+    112,
+    595,
+    408,
+    556,
+    22,
+    51,
+    611,
+    529,
+    242,
+    182
+  ],
+  "gnn_seeds": [
+    0
+  ],
+  "explainer_seeds": [
+    42
+  ],
+  "tie_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "cases": [
+    692
+  ],
+  "case_seed": 0,
+  "case_explainer_seed": 42,
+  "inputs": {
+    "results\\test-assets\\kha\\data\\bashapes\\data.pt": "8fbf94a7ce5850dbdae4a0cd13b178aaa3db1b7009a12efcef8e47306b2c3c73",
+    "results\\test-assets\\kha\\data\\bashapes\\val_nodes.json": "d24f19579a02c45aa4ac2a2832c53a885ee0d2287ba17e1fc1ca6ca84ac4cf45",
+    "notebooks\\01_midterm\\edge_scores.csv": "102b49ffa3cc0a8e1acd187a0f2c2535fbf5c5b9d59dcaccc6e12076336152c2",
+    "results\\test-assets\\kha\\data\\bashapes\\gcn_ckpt.pt": "e751d9e112e5def02e0e80401afb132553ad9071036b4da34d6673e8bebe7b9c"
+  },
+  "outputs": {
+    "a3_0_metrics.csv": "20321fa5dd8cbb15c625a02fcad1af7ccc6464dd1c743008295fa9a89735c986",
+    "a3_0_conflicts.csv": "05e60e4d0cb1f5adc9f025ff0da0f16d84f4fb4ee5452400d4c02e2fa88db07e",
+    "a3_1_counts.csv": "5f8d746b31ba9f2651e030675e555e9e2e01b0dce736307a8a6a09820cc397f9",
+    "a3_1_by_node.csv": "fdd874f88e96533293b1c8430c70c7d089c6a624e6c3e41635ee0d44c1f51c0f",
+    "a3_1_node_conflicts.csv": "bfc3ed051d62fe6ca53560442de96d5668935435c440d33a588fce6d9b2129e6",
+    "metrics_by_run.csv": "f918fac5478ca3dc43f38bbd44217abfa226ad08596434ab3543af8197432b82",
+    "a3_2_mechanisms.csv": "2536fdacf45d94f3fcc1976ef603ed7e48a6edbc45dbda2657a90d96707c96f4",
+    "t4_tie_sensitivity.csv": "14a2cda03895578871308c9871d00ae3c051a189e12e7de1251c0e8d4acd28ae",
+    "t5_negative_fidelity.csv": "ff03a007437f7e1dfa66e750200f47138ec817769554c82fe7c11e19459947c4",
+    "t5_deleted_edges.csv": "5afa9b92359da2c941c6f4ebd188b32ab5b027cae95529231106717992826a1d",
+    "case_top_edges.csv": "29b01deba9bf43263e1afa2d0f875b563ead8ab6513eb8bd42868331fd35a498",
+    "case_deletion_curves.csv": "30a3352a05d9e672857133c4179218799b67d30ef245cb1f0f3df1ddb17af77f",
+    "case_metrics.csv": "72980582efb70ad85977b8033c60b802d9958676fc3929fff9f9c3a19c5a5f49",
+    "case_t2_t3.csv": "28910ba6f25af87fa3bb8984e10206abaaff82ac97226bbad6a45f7974c7eecd",
+    "a3_node_692.png": "0eeca89f6c5a0d95bbfd74e97a60b5b82d403ea89750400ef16da72c9a89cf3d"
+  },
+  "historical_node": 692,
+  "case_rule": "Fixed GNN, PGExplainer seed-averaged metrics, quadrant median distance, class coverage",
+  "winner_rule": "Winning sets are disjoint; ties within absolute tolerance 1e-12",
+  "t4_precision_threshold": 0.5
+}

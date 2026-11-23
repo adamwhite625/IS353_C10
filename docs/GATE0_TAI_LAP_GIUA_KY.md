@@ -44,3 +44,11 @@ Chạy 2 lượt `PGExplainerModel(model)` → `train_on_graph(data, epochs=40, 
 - `max_diff` giữa lượt 1 và CSV giữa kỳ: **`0.323309`**.
 - Nguyên nhân: MLP được khởi tạo trong `PGExplainerModel.__init__` **trước khi** `train_on_graph` gọi `torch.manual_seed(seed)`.
 - Đã sửa bằng F1 (Thiện, nhánh `feat/pn2-thien-pgexplainer`): seed đặt trước khi tạo MLP, huấn luyện ở chế độ tất định. Ghi vào Bảng thay đổi v1 → v2.
+
+## Đối chiếu T06 trên máy Kha
+
+Chạy lại bộ đánh giá giữa kỳ trên CPU với hai bộ dữ liệu gốc và CSV điểm T05.
+Kết quả có 2.080 dòng metric, 6.080 dòng agreement và 0 lỗi. Trung bình và
+độ lệch chuẩn của 240 dòng tổng hợp metric và 160 dòng tổng hợp agreement
+khớp bốn chữ số thập phân. Số node hợp lệ và tổng số node khớp từng dòng.
+[Bằng chứng đối chiếu](../results/gate0/kha_t06_comparison.json)
